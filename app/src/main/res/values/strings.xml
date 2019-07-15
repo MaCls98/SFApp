@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">S&amp;F App</string>
+    <string name="s_f_app"><![CDATA[S&F APP]]></string>
+    <string name="ingresa_tu_numero_de_documento">Ingresa tu numero de documento</string>
+    <string name="introduce_tu_contrase_a">Introduce tu contraseña</string>
+    <string name="iniciar_sesion">Iniciar Sesion</string>
+    <string name="deseas_registrar_una_cuenta"><u>¿Deseas registrar una cuenta?</u></string>
+</resources>
