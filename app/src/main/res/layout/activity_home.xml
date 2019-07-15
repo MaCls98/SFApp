@@ -6,14 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/button2"
@@ -67,6 +79,7 @@
         app:layout_constraintGuide_percent="0.90834475" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
@@ -76,25 +89,35 @@
         app:layout_constraintTop_toTopOf="@+id/guideline10">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/btn_materiales"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:onClick="changeFragMaterials"
             android:text="Materiales" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/btn_maquinaria"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Maquinaria" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_nomina"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Obras" />
+            android:text="Nomina" />
     </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_home"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
 </android.support.constraint.ConstraintLayout>
