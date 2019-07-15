@@ -20,11 +20,14 @@ import com.android.sfapp.utils.HomeViewPagerAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ViewPager vpHome;
     private RecyclerView rvMaterials;
+    private Spinner spObras;
     private FloatingActionButton btnAddItem;
 
     private int[] layouts;
@@ -39,7 +42,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initHome() {
         vpHome = findViewById(R.id.vp_home);
+        spObras = findViewById(R.id.sp_obras);
         btnAddItem = findViewById(R.id.btn_add_item);
+        
+        loadSpinner();
 
 
         //Ventanas de viewPager
@@ -51,11 +57,25 @@ public class HomeActivity extends AppCompatActivity {
         vpHome.setAdapter(homeViewPagerAdapter);
     }
 
+    private void loadSpinner() {
+        String[] o = new String[]{
+                "Obra 1",
+                "Obra 2",
+                "Obra 3"
+        };
+
+        List<String> obras = new ArrayList<>(Arrays.asList(o));
+
+        ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, obras);
+        sAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spObras.setAdapter(sAdapter);
+    }
+
     private void changeViews(int position) {
         switch (position){
             case 0:
                 //frag_materials
-
+                
                 break;
 
             case 1:
