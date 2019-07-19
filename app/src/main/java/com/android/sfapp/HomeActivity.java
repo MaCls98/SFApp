@@ -1,20 +1,19 @@
 package com.android.sfapp;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.android.sfapp.R;
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
@@ -30,6 +29,10 @@ public class HomeActivity extends AppCompatActivity {
     private Spinner spObras;
     private FloatingActionButton btnAddItem;
 
+    private TextView tvMateriales;
+    private TextView tvMaquinaria;
+    private TextView tvNomina;
+
     private int[] layouts;
 
     @Override
@@ -43,10 +46,14 @@ public class HomeActivity extends AppCompatActivity {
     private void initHome() {
         vpHome = findViewById(R.id.vp_home);
         spObras = findViewById(R.id.sp_obras);
-        btnAddItem = findViewById(R.id.btn_add_item);
+        //btnAddItem = findViewById(R.id.btn_add_item);
+        tvMateriales = findViewById(R.id.tv_materiales);
+        tvMaquinaria = findViewById(R.id.tv_maquinaria);
+        tvNomina = findViewById(R.id.tv_nomina);
+
+
         
         loadSpinner();
-
 
         //Ventanas de viewPager
         layouts = new int[]{
@@ -89,6 +96,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void changeFragMaterials(View view){
+        tvMateriales.setVisibility(View.VISIBLE);
+        tvMaquinaria.setVisibility(View.GONE);
+        tvNomina.setVisibility(View.GONE);
+
         rvMaterials = findViewById(R.id.rv_frag_materials);
         rvMaterials.setHasFixedSize(true);
         rvMaterials.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,6 +126,18 @@ public class HomeActivity extends AppCompatActivity {
         rvMaterials.setAdapter(materialsAdapter);
 
         changeViewPage(0);
+    }
+
+    public void changeFragMaquinaria(View view){
+        tvMateriales.setVisibility(View.GONE);
+        tvMaquinaria.setVisibility(View.VISIBLE);
+        tvNomina.setVisibility(View.GONE);
+    }
+
+    public void changeFragNomina(View view){
+        tvMateriales.setVisibility(View.GONE);
+        tvMaquinaria.setVisibility(View.GONE);
+        tvNomina.setVisibility(View.VISIBLE);
     }
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {

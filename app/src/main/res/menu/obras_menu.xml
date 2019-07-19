@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_maquinaria"
+        android:title="Maquinaria"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_materiales"
+        android:title="Materiales"
+        android:icon="@drawable/materiales">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_nomina"
+        android:title="Nomina"
+        android:icon="@drawable/nomina">
+
+    </item>
+</menu>

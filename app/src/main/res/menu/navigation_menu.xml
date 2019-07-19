@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_obras"
+        android:title="Obras"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_proveedores"
+        android:title="Proveedores"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_citas"
+        android:title="Citas"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_reportes"
+        android:title="Reportes"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+</menu>
