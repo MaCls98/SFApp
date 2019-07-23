@@ -73,10 +73,12 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private MaterialsRVAdapter maquinariaAdapter;
 
     private Spinner spObras;
+    private ArrayAdapter<Obra> sAdapter;
 
     private BottomNavigationView bottomNavigationView;
 
     private String selectedDate;
+    private boolean isRequest = false;
 
     private int[] layouts;
 
@@ -181,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAddItem = findViewById(R.id.add_item_obra);
         btnAddObra = findViewById(R.id.add_obra);
         spObras = findViewById(R.id.sp_obras);
-        spObras.setPrompt("Listado de obras");
 
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -428,11 +429,12 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void loadSpinner(Spinner spObras) {
+        sAdapter = new ArrayAdapter<Obra>(getApplicationContext(), R.layout.spinner_item, obras);
+        obras.clear();
         getObras();
-
-        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, obras);
-        sAdapter.setDropDownViewResource(R.layout.spinner_item);
+        sAdapter.notifyDataSetChanged();
         spObras.setAdapter(sAdapter);
+        spObras.setSelection(0);
     }
 
 
@@ -515,10 +517,11 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                                 "En progreso",
                                 row.getString("status_oeuvre"),
                                 row.getString("addres")));
-                    }
-                    Log.d("OBRAS", obras.toString());
+                        }
+                        isRequest = true;
                 } catch (JSONException e) {
-                    e.printStackTrace();
+
+                        e.printStackTrace();
                 }
             }
         });
