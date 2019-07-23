@@ -27,6 +27,7 @@
         app:layout_constraintGuide_percent="0.92" />
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"

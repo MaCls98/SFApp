@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.sfapp.model.Documentos;
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.model.Materials;
 import com.android.sfapp.model.Obra;
@@ -171,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
     private void initMaquiNomina() {
         View v = getLayoutInflater().inflate(R.layout.home_frag_maq_nom, vpHome);
 
+        final FloatingActionsMenu floatingButtonMaqNom = v.findViewById(R.id.fl);
+
         final FloatingActionButton btnAddMaqNom = v.findViewById(R.id.btn_add_maq_nom);
         BottomNavigationView bottomMaqNom = v.findViewById(R.id.bottom_maq_nom);
         bottomMaqNom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.menu_list_maquinaria:
-                        floatingButtonObra.collapse();
+                        floatingButtonMaqNom.collapse();
                         Toast.makeText(MainActivity.this, "Lista maquinas", Toast.LENGTH_SHORT).show();
 
                         btnAddMaqNom.setTitle("Agregar maquinaria");
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.menu_list_nomina:
-                        floatingButtonObra.collapse();
+                        floatingButtonMaqNom.collapse();
                         Toast.makeText(MainActivity.this, "Lista nomina", Toast.LENGTH_SHORT).show();
 
                         btnAddMaqNom.setTitle("Agregar nomina");
@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAddMaquinaria() {
+        changeViewPage(7);
         View v = getLayoutInflater().inflate(R.layout.home_add_maquinaria, vpHome);
         final EditText nombre = v.findViewById(R.id.et_maquinaria_nombre);
         Button btnFecha = findViewById(R.id.btn_fecha_maquinaria);
