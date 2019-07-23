@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 R.layout.home_frag_maq_nom,
                 //Agregar nomina
                 R.layout.home_add_nomina,
-                //Agregar maquinaria
+                //Agregar maquinaria a
                 R.layout.home_add_maquinaria,
                 R.layout.home_frag_reportes,
                 //Obras
