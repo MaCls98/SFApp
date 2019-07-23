@@ -80,8 +80,7 @@
             android:id="@+id/tv_fecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="TextView" />
+            android:gravity="center" />
 
         <EditText
             android:id="@+id/et_direccion"
