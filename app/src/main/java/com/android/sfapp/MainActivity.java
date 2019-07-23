@@ -27,12 +27,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< Updated upstream
-=======
 import com.android.sfapp.model.Documentos;
 import com.android.sfapp.model.Machine;
 import com.android.sfapp.model.Material;
->>>>>>> Stashed changes
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.model.Materials;
 import com.android.sfapp.model.Nomina;
@@ -208,12 +205,75 @@ public class MainActivity extends AppCompatActivity {
                         btnAddMaqNom.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                initAddNomina();
                             }
                         });
                         break;
                 }
                 return true;
+            }
+        });
+    }
+
+    private void initAddNomina() {
+        changeViewPage(6);
+        View v = getLayoutInflater().inflate(R.layout.home_add_nomina, vpHome);
+        final EditText etNombre = v.findViewById(R.id.et_nomina_nombre);
+        final EditText etApellido = v.findViewById(R.id.et_nomina_apellido);
+
+        final EditText etNumDoc = v.findViewById(R.id.et_doc_num);
+        final EditText etTelefono = v.findViewById(R.id.et_nomina_telefono);
+        final EditText etSalario = v.findViewById(R.id.et_nomina_salario);
+
+        Button btnCancelar = v.findViewById(R.id.btn_cancelar_nomina);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvDrawerTitle.setText("Maquinaria y Nomina");
+                changeViewPage(2);
+                initMaquiNomina();
+            }
+        });
+
+        Button btnAgregar = v.findViewById(R.id.btn_agregar_nomina);
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateEmptyFields(etNombre, etApellido) && validateEmptyFields(etNumDoc, etTelefono) && validateEmptyFields(etSalario, null)){
+                    uploadNomina(etNombre, etApellido, etNumDoc, etTelefono, etSalario);
+                }
+            }
+        });
+    }
+
+    private void uploadNomina(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etTelefono, EditText etSalario) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("number_doc", etNumDoc.getText().toString())
+                .add("type_doc", "CC")
+                .add("last_name", etApellido.getText().toString())
+                .add("first_name", etNombre.getText().toString())
+                .add("phone", etTelefono.getText().toString())
+                .add("type_person", "E")
+                .add("salary", etSalario.getText().toString());
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
             }
         });
     }
@@ -690,10 +750,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeViewPage(int current) {
         vpHome.setCurrentItem(current, false);
-    }
-
-    public void addMaterials(int materialObraId, String materialType, String materialUnit, String materialQuantity, String materialProveedor, String materialDate, String materialPrice) {
-        Log.d("MATERIAL: ", materialType + "-" + materialUnit + "-" + materialObraId);
     }
 
     private void showDatePickerDialog() {
