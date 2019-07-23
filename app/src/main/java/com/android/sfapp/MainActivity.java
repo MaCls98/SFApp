@@ -355,7 +355,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View view) {
                 if (validateEmptyFields(tvPrecioUnitario, tvCantidad) && validateEmptyFields(tvProveedor, null) && selectedDate != null){
-                    addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString(), tvProveedor.getText().toString(), tvFecha.getText().toString(), spMaterial.getSelectedItem().toString(), getObraId(spNombreObra.getSelectedItem().toString()));
+                    String [] values = spMaterial.getSelectedItem().toString().split(",");
+                    addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString(), tvProveedor.getText().toString(), tvFecha.getText().toString(), values[1], getObraId(spNombreObra.getSelectedItem().toString()));
                 }
             }
         });
@@ -365,12 +366,12 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         OkHttpClient client = new OkHttpClient();
 
         FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("priceUnit", precioUnitario)
+                .add("price_unit", precioUnitario)
                 .add("quantity", cantidad)
-                .add("nameProvider", proveedor)
-                .add("dateOrder", fecha)
-                .add("typeMaterial", tipoMaterial)
-                .add("idOeuvre", idObra);
+                .add("name_provider", proveedor)
+                .add("date_order", fecha)
+                .add("type_material", tipoMaterial)
+                .add("id_oeuvre", idObra);
 
         RequestBody requestBody = formBuilder.build();
 
