@@ -33,9 +33,21 @@ import com.android.sfapp.utils.MaterialsRVAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements AddMaterialDialog.AddMaterialListener {
 
@@ -65,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private int[] layouts;
     private ArrayList<MaterialCV> materials;
 
-    public static final String HOST = "https://cs-f.herokuapp.com/";
+    public static final String HOST = "https://cs-f.herokuapp.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
                     case R.id.menu_maquinas_nomina:
                         tvDrawerTitle.setText("Maquinaria y Nomina");
+                        changeViews(2);
                         Toast.makeText(getBaseContext(), "Citas", Toast.LENGTH_LONG).show();
                         break;
 
@@ -196,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void initAddObra() {
-        changeViewPage(4);
+        changeViewPage(6);
         View v = getLayoutInflater().inflate(R.layout.home_nv_add_obra, vpHome);
 
         final EditText etNameObra = v.findViewById(R.id.et_obra_name);
@@ -232,8 +245,37 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View v) {
                 if (validateEmptyFields(etNameObra, etDireccionObra) && selectedDate != null){
-                    Toast.makeText(getBaseContext(), "Obra agregada", Toast.LENGTH_LONG).show();
+                    addMaquinaria(etNameObra.toString(), etDireccionObra.toString(), selectedDate);
                 }
+            }
+        });
+    }
+
+    private void addMaquinaria(String etNameObra, String etDireccionObra, String selectedDate) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("name_oeuvre", etNameObra)
+                .add("date_start", selectedDate)
+                .add("addres", etDireccionObra)
+                .add("status_oeuvre", "A");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/oeuvres/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("OBRA", response.body().string());
             }
         });
     }
