@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.sfapp.dialogs.AddMaterialDialog;
 import com.android.sfapp.model.MaterialCV;
+import com.android.sfapp.model.Materials;
 import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             public void onClick(View v) {
                 //Agregar nuevo material
                 Toast.makeText(getBaseContext(), "Agregar Materiales", Toast.LENGTH_LONG).show();
-                changeViewPage(5);
+                initAddMaterial();
             }
         });
 
@@ -311,6 +312,63 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         maquinariaAdapter = new MaterialsRVAdapter(materials);
         rvObra.setLayoutManager(lmMaterials);
         rvObra.setAdapter(maquinariaAdapter);
+    }
+
+    private void initAddMaterial() {
+        View v = getLayoutInflater().inflate(R.layout.home_nv_add_material, vpHome);
+        changeViewPage(5);
+        final Spinner spMaterial = v.findViewById(R.id.sp_add_mat_type);
+        spMaterial.setAdapter(new ArrayAdapter<Materials>(getApplicationContext(), android.R.layout.simple_spinner_item, Materials.values()));
+        final EditText tvPrecioUnitario = v.findViewById(R.id.et_add_mat_precio);
+        final EditText tvCantidad = v.findViewById(R.id.et_add_mat_cantidad);
+        final EditText tvProveedor = v.findViewById(R.id.et_add_mat_proveedor);
+        Button btnFecha = v.findViewById(R.id.btn_add_mat_fecha);
+        final TextView tvFecha = v.findViewById(R.id.tv_add_mat_fecha);
+        final Spinner spNombreObra = v.findViewById(R.id.sp_add_mat_obra);
+        Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
+        Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
+
+        btnFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog();
+                if (selectedDate != null){
+                    tvFecha.setText(selectedDate);
+                }
+            }
+        });
+
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvDrawerTitle.setText("Obras");
+                changeViewPage(0);
+                initObras();
+            }
+        });
+
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validateEmptyFields(tvPrecioUnitario, tvCantidad) && validateEmptyFields(tvProveedor, null) && selectedDate != null){
+                    addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString(), tvProveedor.getText().toString(), tvFecha.getText().toString(), spMaterial.getSelectedItem().toString(), getObraId(spNombreObra.getSelectedItem().toString()));
+                }
+            }
+        });
+    }
+
+    private void addMaterial(String precioUnitario, String cantidad, String proveedor, String fecha, String tipoMaterial, String idObra) {
+
+    }
+
+    private String getObraId(String name) {
+        String id = "";
+        for (int i = 0; i < obras.size(); i++){
+            if (name.equalsIgnoreCase(obras.get(i).getObraName())){
+                id = String.valueOf(obras.get(i).getObraId());
+            }
+        }
+        return id;
     }
 
     private void loadObrasNomina() {
