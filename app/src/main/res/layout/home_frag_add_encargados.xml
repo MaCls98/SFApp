@@ -48,12 +48,13 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_add_encargado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/colorPrimaryDark"
             app:fab_icon="@drawable/add_encargado"
             app:fab_size="mini"
-            app:fab_title="Agregar encargado"/>
+            app:fab_title="Agregar encargado" />
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </android.support.constraint.ConstraintLayout>

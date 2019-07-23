@@ -11,25 +11,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.sfapp.dialogs.AddMaterialDialog;
-import com.android.sfapp.model.Machine;
+import com.android.sfapp.model.Documentos;
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.model.Materials;
-import com.android.sfapp.model.Nomina;
 import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
@@ -44,8 +45,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,7 +54,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements AddMaterialDialog.AddMaterialListener {
+public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
@@ -64,12 +63,10 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private ImageButton btnShowDrawer;
 
     private ViewPager vpHome;
-    private LayoutInflater inflater;
 
     private FloatingActionsMenu floatingButtonObra;
     private FloatingActionButton btnAddItem;
     private FloatingActionButton btnAddObra;
-    private FloatingActionButton btnAddProveedor;
 
     private RecyclerView rvObra;
     private MaterialsRVAdapter maquinariaAdapter;
@@ -86,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private ArrayList<MaterialCV> materials;
     private ArrayList<Obra> obras;
-    private ArrayList<Machine> maquinas;
-    private ArrayList<Nomina> nominas;
 
     public static final String HOST = "https://cs-f.herokuapp.com";
 
@@ -104,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnShowDrawer = findViewById(R.id.btn_drawer);
 
         obras = new ArrayList<>();
+        getObras();
 
         vpHome = findViewById(R.id.vp_home);
 
@@ -122,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 R.layout.home_add_nomina,
                 //Agregar maquinaria
                 R.layout.home_add_maquinaria,
-                //Agregar nomina
-                R.layout.home_add_nomina,
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts, getBaseContext());
@@ -154,19 +148,13 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                     case R.id.menu_encargados:
                         tvDrawerTitle.setText("Encargados");
                         changeViewPage(1);
-                        initObras();
+                        initEncargados();
                         break;
 
                     case R.id.menu_maquinas_nomina:
                         tvDrawerTitle.setText("Maquinaria y Nomina");
-                        changeViews(2);
-                        Toast.makeText(getBaseContext(), "Citas", Toast.LENGTH_LONG).show();
-                        break;
-
-                    case R.id.menu_reportes:
-                        tvDrawerTitle.setText("Reportes");
-                        changeViews(3);
-                        Toast.makeText(getBaseContext(), "Reportes", Toast.LENGTH_LONG).show();
+                        changeViewPage(2);
+                        initMaquiNomina();
                         break;
                 }
                 return true;
@@ -180,6 +168,205 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         });
     }
 
+    private void initMaquiNomina() {
+        View v = getLayoutInflater().inflate(R.layout.home_frag_maq_nom, vpHome);
+
+        final FloatingActionButton btnAddMaqNom = v.findViewById(R.id.btn_add_maq_nom);
+        BottomNavigationView bottomMaqNom = v.findViewById(R.id.bottom_maq_nom);
+        bottomMaqNom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.menu_list_maquinaria:
+                        floatingButtonObra.collapse();
+                        Toast.makeText(MainActivity.this, "Lista maquinas", Toast.LENGTH_SHORT).show();
+
+                        btnAddMaqNom.setTitle("Agregar maquinaria");
+                        btnAddMaqNom.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                initAddMaquinaria();
+                            }
+                        });
+                        break;
+
+                    case R.id.menu_list_nomina:
+                        floatingButtonObra.collapse();
+                        Toast.makeText(MainActivity.this, "Lista nomina", Toast.LENGTH_SHORT).show();
+
+                        btnAddMaqNom.setTitle("Agregar nomina");
+                        btnAddMaqNom.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void initAddMaquinaria() {
+        View v = getLayoutInflater().inflate(R.layout.home_add_maquinaria, vpHome);
+        final EditText nombre = v.findViewById(R.id.et_maquinaria_nombre);
+        Button btnFecha = findViewById(R.id.btn_fecha_maquinaria);
+        final TextView tvDateObra = v.findViewById(R.id.tv_date_maquinaria);
+
+        btnFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+                if (selectedDate != null){
+                    tvDateObra.setText(selectedDate);
+                }else {
+                    Toast.makeText(getBaseContext(), "Por favor selecciona una fecha de agregacion", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        Button cancelar = v.findViewById(R.id.btn_cancelar_maquinaria);
+        cancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvDrawerTitle.setText("Maquinaria y Nomina");
+                changeViewPage(2);
+                initMaquiNomina();
+            }
+        });
+
+        Button agregar = v.findViewById(R.id.btn_agregar_maquinaria);
+        agregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateEmptyFields(nombre, null) && selectedDate.length() > 0){
+                    uploadMaquinaria(nombre.getText().toString(), selectedDate);
+                }
+            }
+        });
+    }
+
+    private void uploadMaquinaria(String toString, String selectedDate) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("name_machine", toString)
+                .add("date_purchase", selectedDate)
+                .add("status_machine", "DI");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/machines/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
+            }
+        });
+    }
+
+    private void initEncargados() {
+        View v = getLayoutInflater().inflate(R.layout.home_frag_add_encargados, vpHome);
+        FloatingActionButton btnAddEncargado = v.findViewById(R.id.btn_add_encargado);
+        btnAddEncargado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addEncargado();
+            }
+        });
+    }
+
+    private void addEncargado() {
+        changeViewPage(6);
+        View v = getLayoutInflater().inflate(R.layout.home_add_nomina, vpHome);
+        LinearLayout llFields = v.findViewById(R.id.ll_fields);
+        final EditText etPassword = new EditText(this);
+        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        etPassword.setHint("Contraseña del encargado");
+        llFields.addView(etPassword);
+        TextView tvTitle = v.findViewById(R.id.tv_title);
+        tvTitle.setHint("Agregar Encargado");
+        final EditText etNombre = v.findViewById(R.id.et_nomina_nombre);
+        etNombre.setHint("Nombre encargado");
+        final EditText etApellido = v.findViewById(R.id.et_nomina_apellido);
+        etApellido.setHint("Apellido encargado");
+
+        final EditText etNumDoc = v.findViewById(R.id.et_doc_num);
+        final EditText etTelefono = v.findViewById(R.id.et_nomina_telefono);
+        etTelefono.setHint("Telefono encargado");
+        final EditText etSalario = v.findViewById(R.id.et_nomina_salario);
+        etSalario.setText("0");
+        etSalario.setVisibility(View.GONE);
+
+        Button btnCancelar = v.findViewById(R.id.btn_cancelar_nomina);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvDrawerTitle.setText("Encargados");
+                changeViewPage(1);
+                initEncargados();
+            }
+        });
+
+        Button btnAgregar = v.findViewById(R.id.btn_agregar_nomina);
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateEmptyFields(etNombre, etApellido)
+                        && validateEmptyFields(etNumDoc, etSalario)
+                        && validateEmptyFields(etTelefono, etPassword)){
+                    uploadEncargado(etNombre, etApellido, etNumDoc, etSalario, etTelefono, etPassword);
+                }
+
+            }
+        });
+    }
+
+    private void uploadEncargado(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etSalario, EditText etTelefono, EditText etPassword) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("number_doc", etNumDoc.getText().toString())
+                .add("type_doc", "CC")
+                .add("last_name", etApellido.getText().toString())
+                .add("first_name", etNombre.getText().toString())
+                .add("phone", etTelefono.getText().toString())
+                .add("type_person", "U")
+                .add("password", etPassword.getText().toString())
+                .add("type_user", "EN")
+                .add("status_user", "H")
+                .add("salary", "0");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
+            }
+        });
+    }
+
     private void initObras() {
         rvObra = findViewById(R.id.rv_frag_materials);
         bottomNavigationView = findViewById(R.id.bnv_obras);
@@ -187,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAddItem = findViewById(R.id.add_item_obra);
         btnAddObra = findViewById(R.id.add_obra);
         spObras = findViewById(R.id.sp_obras);
+        loadSpinner(spObras);
 
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,8 +485,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void loadObrasMateriales() {
         rvObra.setAdapter(null);
-        obras.clear();
-        loadSpinner(spObras);
         btnAddItem.setTitle("Agregar Materiales");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         spNombreObra.setAdapter(sAdapter);
         Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
         Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
-
         btnFecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -411,28 +596,22 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void loadObrasNomina() {
         rvObra.setAdapter(null);
-        obras.clear();
-        loadSpinner(spObras);
         btnAddItem.setTitle("Asignar Nomina");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
-                changeViewPage(6);
             }
         });
     }
 
     private void loadObrasMaquinaria() {
         rvObra.setAdapter(null);
-        obras.clear();
-        loadSpinner(spObras);
         btnAddItem.setTitle("Asignar Maquinaria");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(), "Asignar Maquinaria", Toast.LENGTH_LONG).show();
-                changeViewPage(7);
             }
         });
     }
@@ -463,13 +642,21 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         }
     }
 
-    private void loadSpinner(Spinner spObras) {
-        sAdapter = new ArrayAdapter<Obra>(getApplicationContext(), R.layout.spinner_item, obras);
-        obras.clear();
-        getObras();
+    private void loadSpinner(final Spinner spObras) {
+        sAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, obras);
         sAdapter.notifyDataSetChanged();
         spObras.setAdapter(sAdapter);
-        spObras.setSelection(0);
+        spObras.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) spObras.getSelectedView()).setTextColor(getResources().getColor(R.color.colorBack));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -494,7 +681,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         vpHome.setCurrentItem(current, false);
     }
 
-    @Override
     public void addMaterials(int materialObraId, String materialType, String materialUnit, String materialQuantity, String materialProveedor, String materialDate, String materialPrice) {
         Log.d("MATERIAL: ", materialType + "-" + materialUnit + "-" + materialObraId);
     }
@@ -557,73 +743,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 } catch (JSONException e) {
 
                         e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public void getMachines(){
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/machines")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    JSONArray array = new JSONArray(response.body().string());
-                    for (int i = 0; i < array.length(); i++){
-                        JSONObject row = array.getJSONObject(i);
-                        maquinas.add(new Machine(row.getInt("id_machine"),
-                                row.getString("name_machine"),
-                                row.getString("date_purchase"),
-                                row.getString("status_machine")));
-                    }
-                    Log.d("MAQUINAS", obras.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public void getNomina(){
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/persons/employees")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    JSONArray array = new JSONArray(response.body().string());
-                    for (int i = 0; i < array.length(); i++){
-                        JSONObject row = array.getJSONObject(i);
-                        nominas.add(new Nomina(row.getInt("number_doc"),
-                                row.getString("type_doc"),
-                                row.getString("last_name"),
-                                row.getString("first_name"),
-                                row.getString("phone"),
-                                row.getString("email"),
-                                row.getString("salary")));
-                    }
-                    Log.d("NOMINA", obras.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });

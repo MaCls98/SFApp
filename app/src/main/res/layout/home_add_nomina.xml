@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -51,6 +51,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_fields"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -61,7 +62,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5">
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,16 +90,13 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView7"
+        <EditText
+            android:id="@+id/et_doc_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/selecciona_un_tipo_de_documento" />
-
-        <Spinner
-            android:id="@+id/sp_tipo_de_documento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:ems="10"
+            android:hint="Numero de documento"
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/et_nomina_telefono"

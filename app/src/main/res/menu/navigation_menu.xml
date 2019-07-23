@@ -20,10 +20,12 @@
         android:icon="@drawable/maquinaria_nomina">
     </item>
 
+    <!--
     <item
         android:id="@+id/menu_reportes"
         android:title="Reportes"
         android:icon="@drawable/reportes">
 
     </item>
+    -->
 </menu>

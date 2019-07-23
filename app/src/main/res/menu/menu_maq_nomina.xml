@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_list_maquinaria"
+        android:title="Total de maquinas"
+        android:icon="@drawable/maquinaria">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_list_nomina"
+        android:title="Total de nomina"
+        android:icon="@drawable/active_encargado">
+
+    </item>
+</menu>
