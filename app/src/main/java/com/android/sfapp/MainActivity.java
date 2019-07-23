@@ -363,7 +363,34 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void addMaterial(String precioUnitario, String cantidad, String proveedor, String fecha, String tipoMaterial, String idObra) {
+        OkHttpClient client = new OkHttpClient();
 
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("priceUnit", precioUnitario)
+                .add("quantity", cantidad)
+                .add("nameProvider", proveedor)
+                .add("dateOrder", fecha)
+                .add("typeMaterial", tipoMaterial)
+                .add("idOeuvre", idObra);
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/materials/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("MATERIALES", response.body().string());
+            }
+        });
     }
 
     private String getObraId(String name) {
