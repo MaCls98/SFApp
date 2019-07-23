@@ -1,5 +1,6 @@
 package com.android.sfapp;
 
+import android.app.DatePickerDialog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.sfapp.dialogs.AddMaterialDialog;
 import com.android.sfapp.model.MaterialCV;
+import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private Spinner spObras;
 
     private BottomNavigationView bottomNavigationView;
+
+    private String selectedDate;
 
     private int[] layouts;
     private ArrayList<MaterialCV> materials;
@@ -150,14 +155,12 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         floatingButtonObra = findViewById(R.id.btn_add_item);
         btnAddItem = findViewById(R.id.add_item_obra);
         btnAddObra = findViewById(R.id.add_obra);
-        btnAddProveedor = findViewById(R.id.add_proveedor);
         spObras = findViewById(R.id.sp_obras);
         loadSpinner(spObras);
 
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Agregar obra", Toast.LENGTH_LONG).show();
                 initAddObra();
             }
         });
@@ -194,22 +197,29 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
         final EditText etNameObra = v.findViewById(R.id.et_obra_name);
 
+        final TextView tvDateObra = v.findViewById(R.id.tv_fecha);
+
         Button btnDateObra = v.findViewById(R.id.btn_fecha_obra);
         btnDateObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showDatePickerDialog();
+                if (selectedDate != null){
+                    tvDateObra.setText(selectedDate);
+                }else {
+                    Toast.makeText(getBaseContext(), "Por favor selecciona una fecha de agregacion", Toast.LENGTH_LONG).show();
+                }
             }
         });
-
-        TextView tvDateObra = v.findViewById(R.id.tv_fecha);
         final EditText etDireccionObra = v.findViewById(R.id.et_direccion);
 
         Button btnCancelarObra = v.findViewById(R.id.btn_cancelar_obra);
         btnCancelarObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tvDrawerTitle.setText("Obras");
                 changeViewPage(0);
+                initObras();
             }
         });
 
@@ -217,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAgregarObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateEmptyFields(etNameObra, etDireccionObra)){
+                if (validateEmptyFields(etNameObra, etDireccionObra) && selectedDate != null){
                     Toast.makeText(getBaseContext(), "Obra agregada", Toast.LENGTH_LONG).show();
                 }
             }
@@ -225,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void loadObrasNomina() {
-        btnAddProveedor.setVisibility(View.GONE);
         rvObra.setAdapter(null);
         btnAddItem.setTitle("Agregar Nomina");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
@@ -237,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void loadObrasMateriales() {
-        btnAddProveedor.setVisibility(View.VISIBLE);
         rvObra.setAdapter(null);
         btnAddItem.setTitle("Agregar Materiales");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void loadObrasMaquinaria() {
-        btnAddProveedor.setVisibility(View.GONE);
         rvObra.setAdapter(null);
         btnAddItem.setTitle("Agregar Maquinaria");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
@@ -346,6 +353,17 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     @Override
     public void addMaterials(int materialObraId, String materialType, String materialUnit, String materialQuantity, String materialProveedor, String materialDate, String materialPrice) {
         Log.d("MATERIAL: ", materialType + "-" + materialUnit + "-" + materialObraId);
+    }
+
+    private void showDatePickerDialog() {
+
+        DatePickerFragment dateFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                selectedDate = year + "-" + (month+1) + "-" + day;
+            }
+        });
+        dateFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     public boolean validateEmptyFields(EditText etOne, EditText etTwo){

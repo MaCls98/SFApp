@@ -83,15 +83,6 @@
         app:layout_constraintEnd_toEndOf="@+id/rv_frag_materials">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_proveedor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorPrimaryDark"
-            app:fab_icon="@drawable/add_encargado"
-            app:fab_size="mini"
-            app:fab_title="Agregar proveedor" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_item_obra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
