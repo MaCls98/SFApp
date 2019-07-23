@@ -26,8 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.sfapp.dialogs.AddMaterialDialog;
+import com.android.sfapp.model.Machine;
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.model.Materials;
+import com.android.sfapp.model.Nomina;
 import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
@@ -82,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private ArrayList<MaterialCV> materials;
     private ArrayList<Obra> obras;
+    private ArrayList<Machine> maquinas;
+    private ArrayList<Nomina> nominas;
 
     public static final String HOST = "https://cs-f.herokuapp.com";
 
@@ -332,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         spNombreObra.setAdapter(sAdapter);
         Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
         Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
+
         btnFecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -547,6 +552,73 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                                 row.getString("addres")));
                     }
                     Log.d("OBRAS", obras.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getMachines(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/machines")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        maquinas.add(new Machine(row.getInt("id_machine"),
+                                row.getString("name_machine"),
+                                row.getString("date_purchase"),
+                                row.getString("status_machine")));
+                    }
+                    Log.d("MAQUINAS", obras.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getNomina(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/employees")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        nominas.add(new Nomina(row.getInt("number_doc"),
+                                row.getString("type_doc"),
+                                row.getString("last_name"),
+                                row.getString("first_name"),
+                                row.getString("phone"),
+                                row.getString("email"),
+                                row.getString("salary")));
+                    }
+                    Log.d("NOMINA", obras.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
