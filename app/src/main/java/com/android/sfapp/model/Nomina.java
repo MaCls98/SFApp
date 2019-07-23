@@ -47,5 +47,18 @@ public class Nomina {
     public String getSalary() {
         return salary;
     }
+
+    @Override
+    public String toString() {
+        return "Nomina{" +
+                "numberDoc=" + numberDoc +
+                ", typeDoc='" + typeDoc + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", salary='" + salary + '\'' +
+                '}';
+    }
 }
 

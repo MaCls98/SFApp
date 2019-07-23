@@ -37,7 +37,9 @@ import com.android.sfapp.model.Nomina;
 import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
+import com.android.sfapp.utils.MaquinariaRVAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
+import com.android.sfapp.utils.NominaRVAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -371,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.menu_maquinaria:
+                        rvObra.setAdapter(null);
                         floatingButtonObra.collapse();
                         getMachines();
                         Runnable rMaquinas = new Runnable() {
@@ -384,6 +387,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.menu_materiales:
+                        rvObra.setAdapter(null);
                         floatingButtonObra.collapse();
                         getMateriales();
                         Runnable rMateriales = new Runnable() {
@@ -397,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.menu_nomina:
+                        rvObra.setAdapter(null);
                         floatingButtonObra.collapse();
                         getNomina();
                         Runnable rNomina = new Runnable() {
@@ -455,10 +460,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void loadObrasNomina() {
+        btnAddItem.setTitle("Asignar Nomina");
+        btnAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
+            }
+        });
 
+        RecyclerView.LayoutManager lmNomina = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        NominaRVAdapter nominaRVAdapter = new NominaRVAdapter(nominas);
+        rvObra.setLayoutManager(lmNomina);
+        rvObra.setAdapter(nominaRVAdapter);
+    }
 
     private void loadObrasMaquinaria() {
-        rvObra.setAdapter(null);
         btnAddItem.setTitle("Asignar Maquinaria");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -468,10 +486,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         RecyclerView.LayoutManager lmMaquinaria = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        MaquinariaRVAdapter maquinariaRVAdapter = new MaquinariaRVAdapter(machines);
+        rvObra.setLayoutManager(lmMaquinaria);
+        rvObra.setAdapter(maquinariaRVAdapter);
     }
 
     private void loadObrasMateriales() {
-        rvObra.setAdapter(null);
         btnAddItem.setTitle("Agregar Materiales");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -535,17 +556,6 @@ public class MainActivity extends AppCompatActivity {
                     String [] values = spMaterial.getSelectedItem().toString().split(",");
                     addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString(), tvProveedor.getText().toString(), tvFecha.getText().toString(), values[1], getObraId(spNombreObra.getSelectedItem().toString()));
                 }
-            }
-        });
-    }
-
-    private void loadObrasNomina() {
-        rvObra.setAdapter(null);
-        btnAddItem.setTitle("Asignar Nomina");
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
             }
         });
     }
