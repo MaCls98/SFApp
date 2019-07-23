@@ -43,7 +43,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -97,20 +96,19 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         layouts = new int[]{
                 //Ventanas del DrawerTitle, se empieza a contar en 0
                 R.layout.home_frag_obras,
-                R.layout.home_frag_add_colaboradores,
+                R.layout.home_frag_add_encargados,
                 R.layout.home_frag_maq_nom,
-                //Agregar nomina
-                R.layout.home_add_nomina,
-                //Agregar maquinaria a
-                R.layout.home_add_maquinaria,
                 R.layout.home_frag_reportes,
-                //Obras
                 //Agregar obra
                 R.layout.home_nv_add_obra,
+                //Agregar material
+                R.layout.home_nv_add_material,
                 //Agregar nomina
                 R.layout.home_add_nomina,
-                //Agregar proveedor
-                R.layout.home_nv_add_material
+                //Agregar maquinaria
+                R.layout.home_add_maquinaria,
+                //Agregar nomina
+                R.layout.home_add_nomina,
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts, getBaseContext());
@@ -152,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
                     case R.id.menu_reportes:
                         tvDrawerTitle.setText("Reportes");
+                        changeViews(3);
                         Toast.makeText(getBaseContext(), "Reportes", Toast.LENGTH_LONG).show();
                         break;
                 }
@@ -182,6 +181,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             }
         });
 
+        loadObrasMaquinaria();
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -204,12 +205,10 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 return true;
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.menu_maquinaria);
-        loadObrasMaquinaria();
     }
 
     private void initAddObra() {
-        changeViewPage(6);
+        changeViewPage(4);
         View v = getLayoutInflater().inflate(R.layout.home_nv_add_obra, vpHome);
 
         final EditText etNameObra = v.findViewById(R.id.et_obra_name);
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View v) {
                 if (validateEmptyFields(etNameObra, etDireccionObra) && selectedDate != null){
-                    addMaquinaria(etNameObra.toString(), etDireccionObra.toString(), selectedDate);
+                    addMaquinaria(etNameObra.getText().toString(), etDireccionObra.getText().toString(), selectedDate);
                 }
             }
         });
@@ -280,17 +279,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         });
     }
 
-    private void loadObrasNomina() {
-        rvObra.setAdapter(null);
-        btnAddItem.setTitle("Agregar Nomina");
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Agregar Nomina", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     private void loadObrasMateriales() {
         rvObra.setAdapter(null);
         btnAddItem.setTitle("Agregar Materiales");
@@ -299,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             public void onClick(View v) {
                 //Agregar nuevo material
                 Toast.makeText(getBaseContext(), "Agregar Materiales", Toast.LENGTH_LONG).show();
-                openAddMaterialDialog();
+                changeViewPage(5);
             }
         });
 
@@ -315,11 +303,16 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         rvObra.setAdapter(maquinariaAdapter);
     }
 
-    private void openAddMaterialDialog() {
-        AddMaterialDialog materialDialog = new AddMaterialDialog();
-        materialDialog.show(
-                getSupportFragmentManager(), "Agregar nuevo material"
-        );
+    private void loadObrasNomina() {
+        rvObra.setAdapter(null);
+        btnAddItem.setTitle("Agregar Nomina");
+        btnAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Agregar Nomina", Toast.LENGTH_LONG).show();
+                changeViewPage(6);
+            }
+        });
     }
 
     private void loadObrasMaquinaria() {
@@ -329,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(), "Agregar Maquinaria", Toast.LENGTH_LONG).show();
+                changeViewPage(7);
             }
         });
     }
@@ -337,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     public boolean onOptionsItemSelected(MenuItem item) {
         return abdt.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
 
     //Manejo de viewPager
     private void changeViews(int position) {
