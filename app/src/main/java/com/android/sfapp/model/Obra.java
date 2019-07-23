@@ -44,13 +44,6 @@ public class Obra {
 
     @Override
     public String toString() {
-        return "Obra{" +
-                "obraId=" + obraId +
-                ", obraName='" + obraName + '\'' +
-                ", obraStartDate='" + obraStartDate + '\'' +
-                ", obraEndDate='" + obraEndDate + '\'' +
-                ", obraState='" + obraState + '\'' +
-                ", obraDireccion='" + obraDireccion + '\'' +
-                '}';
+        return obraName;
     }
 }

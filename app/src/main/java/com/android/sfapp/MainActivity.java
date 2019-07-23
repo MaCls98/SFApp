@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAddItem = findViewById(R.id.add_item_obra);
         btnAddObra = findViewById(R.id.add_obra);
         spObras = findViewById(R.id.sp_obras);
-        loadSpinner(spObras);
+        spObras.setPrompt("Listado de obras");
 
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,6 +292,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void loadObrasMateriales() {
         rvObra.setAdapter(null);
+        obras.clear();
+        loadSpinner(spObras);
         btnAddItem.setTitle("Agregar Materiales");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,11 +374,13 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void loadObrasNomina() {
         rvObra.setAdapter(null);
-        btnAddItem.setTitle("Agregar Nomina");
+        obras.clear();
+        loadSpinner(spObras);
+        btnAddItem.setTitle("Asignar Nomina");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Agregar Nomina", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
                 changeViewPage(6);
             }
         });
@@ -384,11 +388,13 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void loadObrasMaquinaria() {
         rvObra.setAdapter(null);
-        btnAddItem.setTitle("Agregar Maquinaria");
+        obras.clear();
+        loadSpinner(spObras);
+        btnAddItem.setTitle("Asignar Maquinaria");
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Agregar Maquinaria", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Asignar Maquinaria", Toast.LENGTH_LONG).show();
                 changeViewPage(7);
             }
         });
@@ -421,15 +427,9 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void loadSpinner(Spinner spObras) {
-        String[] o = new String[]{
-                "Obra 1",
-                "Obra 2",
-                "Obra 3"
-        };
+        getObras();
 
-        List<String> obras = new ArrayList<>(Arrays.asList(o));
-
-        ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, obras);
+        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, obras);
         sAdapter.setDropDownViewResource(R.layout.spinner_item);
         spObras.setAdapter(sAdapter);
     }
