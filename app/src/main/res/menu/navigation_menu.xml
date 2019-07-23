@@ -3,28 +3,28 @@
     <item
         android:id="@+id/menu_obras"
         android:title="Obras"
-        android:icon="@drawable/maquinaria">
+        android:icon="@drawable/obra">
 
     </item>
 
     <item
         android:id="@+id/menu_encargados"
         android:title="Encargados"
-        android:icon="@drawable/maquinaria">
+        android:icon="@drawable/active_encargado">
 
     </item>
 
     <item
         android:id="@+id/menu_maquinas_nomina"
         android:title="Maquinaria y nomina"
-        android:icon="@drawable/maquinaria">
+        android:icon="@drawable/maquinaria_nomina">
 
     </item>
 
     <item
         android:id="@+id/menu_reportes"
         android:title="Reportes"
-        android:icon="@drawable/maquinaria">
+        android:icon="@drawable/reportes">
 
     </item>
 </menu>
