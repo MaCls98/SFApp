@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private int[] layouts;
     private ArrayList<MaterialCV> materials;
 
+    public static final String HOST = "https://cs-f.herokuapp.com/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 //Agregar obra
                 R.layout.home_nv_add_obra,
                 //Agregar nomina
-                R.layout.home_nv_add_nomina
+                R.layout.home_add_nomina
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts, getBaseContext());
