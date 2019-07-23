@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.sfapp.dialogs.AddMaterialDialog;
 import com.android.sfapp.model.MaterialCV;
+import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
@@ -34,6 +35,9 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private String selectedDate;
 
     private int[] layouts;
+
     private ArrayList<MaterialCV> materials;
+    private ArrayList<Obra> obras;
 
     public static final String HOST = "https://cs-f.herokuapp.com";
 
@@ -89,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         dl = findViewById(R.id.dl);
         tvDrawerTitle = findViewById(R.id.tv_drawer_title);
         btnShowDrawer = findViewById(R.id.btn_drawer);
+
+        obras = new ArrayList<>();
 
         vpHome = findViewById(R.id.vp_home);
 
@@ -245,12 +253,14 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             public void onClick(View v) {
                 if (validateEmptyFields(etNameObra, etDireccionObra) && selectedDate != null){
                     addMaquinaria(etNameObra.getText().toString(), etDireccionObra.getText().toString(), selectedDate);
+                    selectedDate = null;
                 }
             }
         });
     }
 
     private void addMaquinaria(String etNameObra, String etDireccionObra, String selectedDate) {
+        getObras();
         OkHttpClient client = new OkHttpClient();
 
         FormBody.Builder formBuilder = new FormBody.Builder()
@@ -420,5 +430,39 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             return false;
         }
         return true;
+    }
+
+    public void getObras(){
+        OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(HOST + "/oeuvres")
+                    .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        obras.add(new Obra(row.getInt("id_oeuvre"),
+                                row.getString("name_oeuvre"),
+                                row.getString("date_start"),
+                                "En progreso",
+                                row.getString("status_oeuvre"),
+                                row.getString("addres")));
+                    }
+                    Log.d("OBRAS", obras.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

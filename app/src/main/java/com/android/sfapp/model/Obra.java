@@ -8,16 +8,14 @@ public class Obra {
     private String obraEndDate;
     private String obraState;
     private String obraDireccion;
-    private String obraIdPropietario;
 
-    public Obra(int obraId, String obraName, String obraStartDate, String obraEndDate, String obraState, String obraDireccion, String obraIdPropietario) {
+    public Obra(int obraId, String obraName, String obraStartDate, String obraEndDate, String obraState, String obraDireccion) {
         this.obraId = obraId;
         this.obraName = obraName;
         this.obraStartDate = obraStartDate;
         this.obraEndDate = obraEndDate;
         this.obraState = obraState;
         this.obraDireccion = obraDireccion;
-        this.obraIdPropietario = obraIdPropietario;
     }
 
     public int getObraId() {
@@ -44,10 +42,6 @@ public class Obra {
         return obraDireccion;
     }
 
-    public String getObraIdPropietario() {
-        return obraIdPropietario;
-    }
-
     @Override
     public String toString() {
         return "Obra{" +
@@ -57,7 +51,6 @@ public class Obra {
                 ", obraEndDate='" + obraEndDate + '\'' +
                 ", obraState='" + obraState + '\'' +
                 ", obraDireccion='" + obraDireccion + '\'' +
-                ", obraIdPropietario='" + obraIdPropietario + '\'' +
                 '}';
     }
 }
