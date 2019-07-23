@@ -15,4 +15,13 @@
 
     <string name="Open"></string>
     <string name="Close"></string>
+    <string name="cancelar">Cancelar</string>
+    <string name="nombre_trabajador">Nombre trabajador</string>
+    <string name="apellido_trabajador">Apellido trabajador</string>
+    <string name="tgrfccrtgced">tgrfccrtgced</string>
+    <string name="selecciona_un_tipo_de_documento">Selecciona un tipo de documento</string>
+    <string name="agregar">Agregar</string>
+    <string name="agregar_nomina">Agregar Nomina</string>
+    <string name="salario_trabajador">Salario trabajador</string>
+    <string name="telefono_trabajor">Telefono trabajor</string>
 </resources>

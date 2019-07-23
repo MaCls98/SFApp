@@ -13,7 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="Agregar Nomina"
+        android:text="@string/agregar_nomina"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -24,7 +24,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancelar"
+            android:text="@string/cancelar"
             android:textAllCaps="false" />
 
         <Button
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Agregar"
+            android:text="@string/agregar"
             android:textAllCaps="false" />
     </LinearLayout>
 
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:text="tgrfccrtgced">
+            android:text="@string/tgrfccrtgced">
 
             <EditText
                 android:id="@+id/et_nomina_nombre"
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Nombre trabajador"
+                android:hint="@string/nombre_trabajador"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Apellido trabajador"
+                android:hint="@string/apellido_trabajador"
                 android:inputType="textPersonName" />
 
         </LinearLayout>
@@ -93,7 +93,7 @@
             android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selecciona un tipo de documento" />
+            android:text="@string/selecciona_un_tipo_de_documento" />
 
         <Spinner
             android:id="@+id/sp_tipo_de_documento"
@@ -105,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Telefono trabajor"
+            android:hint="@string/telefono_trabajor"
             android:inputType="phone" />
 
         <EditText
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Salario trabajador"
+            android:hint="@string/salario_trabajador"
             android:inputType="number" />
 
     </LinearLayout>
