@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View v) {
                 //Agregar nuevo material
+                Toast.makeText(getBaseContext(), "Agregar Materiales", Toast.LENGTH_LONG).show();
                 initAddMaterial();
             }
         });
@@ -317,20 +318,21 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void initAddMaterial() {
-        Toast.makeText(getBaseContext(), "Agregar Materiales", Toast.LENGTH_LONG).show();
         changeViewPage(5);
         View v = getLayoutInflater().inflate(R.layout.home_nv_add_material, vpHome);
         final Spinner spMaterial = v.findViewById(R.id.sp_add_mat_type);
-        spMaterial.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, Materials.values()));
+        spMaterial.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, Materials.values()));
         final EditText tvPrecioUnitario = v.findViewById(R.id.et_add_mat_precio);
         final EditText tvCantidad = v.findViewById(R.id.et_add_mat_cantidad);
         final EditText tvProveedor = v.findViewById(R.id.et_add_mat_proveedor);
         Button btnFecha = v.findViewById(R.id.btn_add_mat_fecha);
         final TextView tvFecha = v.findViewById(R.id.tv_add_mat_fecha);
         final Spinner spNombreObra = v.findViewById(R.id.sp_add_mat_obra);
+        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, obras);
+        sAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spNombreObra.setAdapter(sAdapter);
         Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
         Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
-
         btnFecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
