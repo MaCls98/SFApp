@@ -38,6 +38,6 @@ public enum Materials {
 
     @Override
     public String toString() {
-        return materialType + " --> " + materialC;
+        return materialType + "," + materialC;
     }
 }

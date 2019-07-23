@@ -26,11 +26,11 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
 
         public MaterialsViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvMaterialType = itemView.findViewById(R.id.tv_material_type);
+            tvMaterialType = itemView.findViewById(R.id.tv_machine_name);
             tvQuantity = itemView.findViewById(R.id.tv_quantity);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvPrice = itemView.findViewById(R.id.tv_price);
-            tvProveedor = itemView.findViewById(R.id.tv_proveedor);
+            tvProveedor = itemView.findViewById(R.id.tv_maquina_status);
         }
     }
 

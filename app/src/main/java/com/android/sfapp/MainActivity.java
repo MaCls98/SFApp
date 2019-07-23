@@ -1,6 +1,7 @@
 package com.android.sfapp;
 
 import android.app.DatePickerDialog;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -75,14 +76,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Spinner spObras;
     private ArrayAdapter<Obra> sAdapter;
-    private ArrayList<Machine> machines;
-    private ArrayList<Nomina> nominas;
-    private ArrayList<Material> materialList;
+    private ArrayList<Machine> machines = new ArrayList<>();
+    private ArrayList<Nomina> nominas = new ArrayList<>();
+    private ArrayList<Material> materialList = new ArrayList<>();
 
     private BottomNavigationView bottomNavigationView;
 
     private String selectedDate;
-    private boolean isRequest = false;
 
     private int[] layouts;
 
@@ -246,37 +246,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadNomina(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etTelefono, EditText etSalario) {
-        OkHttpClient client = new OkHttpClient();
 
-        FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("number_doc", etNumDoc.getText().toString())
-                .add("type_doc", "CC")
-                .add("last_name", etApellido.getText().toString())
-                .add("first_name", etNombre.getText().toString())
-                .add("phone", etTelefono.getText().toString())
-                .add("type_person", "E")
-                .add("salary", etSalario.getText().toString());
-
-        RequestBody requestBody = formBuilder.build();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/persons/add")
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("ENCARGADO", response.body().string());
-            }
-        });
-    }
 
     private void initAddMaquinaria() {
         changeViewPage(7);
@@ -318,33 +288,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadMaquinaria(String toString, String selectedDate) {
-        OkHttpClient client = new OkHttpClient();
 
-        FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("name_machine", toString)
-                .add("date_purchase", selectedDate)
-                .add("status_machine", "DI");
-
-        RequestBody requestBody = formBuilder.build();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/machines/add")
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("ENCARGADO", response.body().string());
-            }
-        });
-    }
 
     private void initEncargados() {
         View v = getLayoutInflater().inflate(R.layout.home_frag_add_encargados, vpHome);
@@ -403,48 +347,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadEncargado(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etSalario, EditText etTelefono, EditText etPassword) {
-        OkHttpClient client = new OkHttpClient();
 
-        FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("number_doc", etNumDoc.getText().toString())
-                .add("type_doc", "CC")
-                .add("last_name", etApellido.getText().toString())
-                .add("first_name", etNombre.getText().toString())
-                .add("phone", etTelefono.getText().toString())
-                .add("type_person", "U")
-                .add("password", etPassword.getText().toString())
-                .add("type_user", "EN")
-                .add("status_user", "H")
-                .add("salary", "0");
-
-        RequestBody requestBody = formBuilder.build();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/persons/add")
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("ENCARGADO", response.body().string());
-            }
-        });
-    }
 
     private void initObras() {
-        rvObra = findViewById(R.id.rv_frag_materials);
-        bottomNavigationView = findViewById(R.id.bnv_obras);
-        floatingButtonObra = findViewById(R.id.btn_add_item);
-        btnAddItem = findViewById(R.id.add_item_obra);
-        btnAddObra = findViewById(R.id.add_obra);
-        spObras = findViewById(R.id.sp_obras);
+        View obras = getLayoutInflater().inflate(R.layout.home_frag_obras, vpHome);
+        rvObra = obras.findViewById(R.id.rv_frag_materials);
+        bottomNavigationView = obras.findViewById(R.id.bnv_obras);
+        floatingButtonObra = obras.findViewById(R.id.btn_add_item);
+        btnAddItem = obras.findViewById(R.id.add_item_obra);
+        btnAddObra = obras.findViewById(R.id.add_obra);
+        spObras = obras.findViewById(R.id.sp_obras);
         loadSpinner(spObras);
 
         btnAddObra.setOnClickListener(new View.OnClickListener() {
@@ -454,25 +366,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadObrasMaquinaria();
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.menu_maquinaria:
                         floatingButtonObra.collapse();
-                        loadObrasMaquinaria();
+                        getMachines();
+                        Runnable rMaquinas = new Runnable() {
+                            @Override
+                            public void run() {
+                                loadObrasMaquinaria();
+                            }
+                        };
+                        Handler hMaquinas = new Handler();
+                        hMaquinas.postDelayed(rMaquinas, 2000);
                         break;
 
                     case R.id.menu_materiales:
                         floatingButtonObra.collapse();
-                        loadObrasMateriales();
+                        getMateriales();
+                        Runnable rMateriales = new Runnable() {
+                            @Override
+                            public void run() {
+                                loadObrasMateriales();
+                            }
+                        };
+                        Handler hMateriales = new Handler();
+                        hMateriales.postDelayed(rMateriales, 2000);
                         break;
 
                     case R.id.menu_nomina:
                         floatingButtonObra.collapse();
-                        loadObrasNomina();
+                        getNomina();
+                        Runnable rNomina = new Runnable() {
+                            @Override
+                            public void run() {
+                                loadObrasNomina();
+                            }
+                        };
+                        Handler hNomina = new Handler();
+                        hNomina.postDelayed(rNomina, 2000);
                         break;
                 }
                 return true;
@@ -483,9 +417,7 @@ public class MainActivity extends AppCompatActivity {
     private void initAddObra() {
         changeViewPage(4);
         View v = getLayoutInflater().inflate(R.layout.home_nv_add_obra, vpHome);
-
         final EditText etNameObra = v.findViewById(R.id.et_obra_name);
-
         final TextView tvDateObra = v.findViewById(R.id.tv_fecha);
 
         Button btnDateObra = v.findViewById(R.id.btn_fecha_obra);
@@ -508,7 +440,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 tvDrawerTitle.setText("Obras");
                 changeViewPage(0);
-                initObras();
             }
         });
 
@@ -524,34 +455,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void addMaquinaria(String etNameObra, String etDireccionObra, String selectedDate) {
-        getObras();
-        OkHttpClient client = new OkHttpClient();
 
-        FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("name_oeuvre", etNameObra)
-                .add("date_start", selectedDate)
-                .add("addres", etDireccionObra)
-                .add("status_oeuvre", "A");
 
-        RequestBody requestBody = formBuilder.build();
-
-        Request request = new Request.Builder()
-                .url(HOST + "/oeuvres/add")
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+    private void loadObrasMaquinaria() {
+        rvObra.setAdapter(null);
+        btnAddItem.setTitle("Asignar Maquinaria");
+        btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("OBRA", response.body().string());
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Asignar Maquinaria", Toast.LENGTH_LONG).show();
             }
         });
+
+        RecyclerView.LayoutManager lmMaquinaria = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     }
 
     private void loadObrasMateriales() {
@@ -568,9 +484,9 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager lmMaterials = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        for (int i = 0; i < 10; i++){
-            materials.add(new MaterialCV(i, i++, "Tipo de material: " + i, "unidad generica",
-                    "Cantidad: " + i, "Proveedor : " + i, "Fecha: " + i, "$" + i));
+        for (Material m:
+                materialList) {
+            materials.add(new MaterialCV(m.getIdOrder(), m.getIdOeuvre(), m.getTypeMaterial(), "n", m.getQuantity(), m.getNameProvider(), m.getDateOrder(), m.getPriceUni()));
         }
 
         maquinariaAdapter = new MaterialsRVAdapter(materials);
@@ -609,7 +525,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tvDrawerTitle.setText("Obras");
                 changeViewPage(0);
-                initObras();
             }
         });
 
@@ -620,6 +535,181 @@ public class MainActivity extends AppCompatActivity {
                     String [] values = spMaterial.getSelectedItem().toString().split(",");
                     addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString(), tvProveedor.getText().toString(), tvFecha.getText().toString(), values[1], getObraId(spNombreObra.getSelectedItem().toString()));
                 }
+            }
+        });
+    }
+
+    private void loadObrasNomina() {
+        rvObra.setAdapter(null);
+        btnAddItem.setTitle("Asignar Nomina");
+        btnAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return abdt.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+    //Manejo de viewPager
+    private void changeViews(int position) {
+        switch (position){
+            case 0:
+                //frag_obras
+                break;
+
+            case 1:
+                //frag_encargados
+                break;
+
+            case 2:
+                //frag_maq_nom
+                break;
+        }
+    }
+
+    private void uploadMaquinaria(String toString, String selectedDate) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("name_machine", toString)
+                .add("date_purchase", selectedDate)
+                .add("status_machine", "DI");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/machines/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
+            }
+        });
+    }
+
+    private void uploadEncargado(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etSalario, EditText etTelefono, EditText etPassword) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("number_doc", etNumDoc.getText().toString())
+                .add("type_doc", "CC")
+                .add("last_name", etApellido.getText().toString())
+                .add("first_name", etNombre.getText().toString())
+                .add("phone", etTelefono.getText().toString())
+                .add("type_person", "U")
+                .add("password", etPassword.getText().toString())
+                .add("type_user", "EN")
+                .add("status_user", "H")
+                .add("salary", "0");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
+            }
+        });
+    }
+
+    private void uploadNomina(EditText etNombre, EditText etApellido, EditText etNumDoc, EditText etTelefono, EditText etSalario) {
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("number_doc", etNumDoc.getText().toString())
+                .add("type_doc", "CC")
+                .add("last_name", etApellido.getText().toString())
+                .add("first_name", etNombre.getText().toString())
+                .add("phone", etTelefono.getText().toString())
+                .add("type_person", "E")
+                .add("salary", etSalario.getText().toString());
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("ENCARGADO", response.body().string());
+            }
+        });
+    }
+
+    private void loadSpinner(final Spinner spObras) {
+        sAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, obras);
+        sAdapter.notifyDataSetChanged();
+        spObras.setAdapter(sAdapter);
+        spObras.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) spObras.getSelectedView()).setTextColor(getResources().getColor(R.color.colorBack));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void addMaquinaria(String etNameObra, String etDireccionObra, String selectedDate) {
+        getObras();
+        OkHttpClient client = new OkHttpClient();
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("name_oeuvre", etNameObra)
+                .add("date_start", selectedDate)
+                .add("addres", etDireccionObra)
+                .add("status_oeuvre", "A");
+
+        RequestBody requestBody = formBuilder.build();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/oeuvres/add")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.d("OBRA", response.body().string());
             }
         });
     }
@@ -665,72 +755,6 @@ public class MainActivity extends AppCompatActivity {
         return id;
     }
 
-    private void loadObrasNomina() {
-        rvObra.setAdapter(null);
-        btnAddItem.setTitle("Asignar Nomina");
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Asignar Nomina", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void loadObrasMaquinaria() {
-        rvObra.setAdapter(null);
-        btnAddItem.setTitle("Asignar Maquinaria");
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Asignar Maquinaria", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return abdt.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    }
-
-    //Manejo de viewPager
-    private void changeViews(int position) {
-        switch (position){
-            case 0:
-                //frag_obras
-                break;
-
-            case 1:
-                //frag_proveedores
-                break;
-
-            case 2:
-                //frag_citas
-                break;
-
-            case 3:
-                //frag_reportes
-                break;
-        }
-    }
-
-    private void loadSpinner(final Spinner spObras) {
-        sAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, obras);
-        sAdapter.notifyDataSetChanged();
-        spObras.setAdapter(sAdapter);
-        spObras.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) spObras.getSelectedView()).setTextColor(getResources().getColor(R.color.colorBack));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
-
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int i, float v, int i1) {
@@ -749,6 +773,12 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void changeViewPage(int current) {
+        switch (current){
+            case 0:
+                Toast.makeText(this, "HOLOOOOOOOOoo", Toast.LENGTH_SHORT).show();
+                initObras();
+                break;
+        }
         vpHome.setCurrentItem(current, false);
     }
 
@@ -806,7 +836,6 @@ public class MainActivity extends AppCompatActivity {
                                 row.getString("status_oeuvre"),
                                 row.getString("addres")));
                         }
-                        isRequest = true;
                 } catch (JSONException e) {
                         e.printStackTrace();
                 }
@@ -833,6 +862,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray array = new JSONArray(response.body().string());
                     for (int i = 0; i < array.length(); i++){
                         JSONObject row = array.getJSONObject(i);
+                        materialList.clear();
                         materialList.add(new Material(row.getInt("id_order"),
                                 row.getString("price_unit"),
                                 row.getString("quantity"),
@@ -868,6 +898,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray array = new JSONArray(response.body().string());
                     for (int i = 0; i < array.length(); i++){
                         JSONObject row = array.getJSONObject(i);
+                        machines.clear();
                         machines.add(new Machine(row.getInt("id_machine"),
                                 row.getString("name_machine"),
                                 row.getString("date_purchase"),
@@ -900,12 +931,13 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray array = new JSONArray(response.body().string());
                     for (int i = 0; i < array.length(); i++){
                         JSONObject row = array.getJSONObject(i);
+                        nominas.clear();
                         nominas.add(new Nomina(row.getInt("number_doc"),
                                 row.getString("type_doc"),
                                 row.getString("last_name"),
                                 row.getString("first_name"),
                                 row.getString("phone"),
-                                row.getString("email"),
+                                "no",
                                 row.getString("salary")));
                     }
                     Log.d("NOMINA", nominas.toString());
@@ -915,7 +947,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }
 

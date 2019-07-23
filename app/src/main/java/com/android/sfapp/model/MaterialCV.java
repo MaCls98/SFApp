@@ -11,7 +11,9 @@ public class MaterialCV {
     private String materialDate;
     private String materialPrice;
 
-    public MaterialCV(int materialId, int materialObraId, String materialType, String materialUnit, String materialQuantity, String materialProveedor, String materialDate, String materialPrice) {
+    public MaterialCV(int materialId, int materialObraId, String materialType,
+                      String materialUnit, String materialQuantity, String materialProveedor,
+                      String materialDate, String materialPrice) {
         this.materialId = materialId;
         this.materialObraId = materialObraId;
         this.materialType = materialType;
