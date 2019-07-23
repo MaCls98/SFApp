@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -157,9 +159,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "Agregar Obra", Toast.LENGTH_LONG).show();
                 initAddObra();
-                changeViewPage(4);
             }
         });
 
@@ -191,6 +191,30 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     private void initAddObra() {
         //TEST
+        final EditText etNameObra = findViewById(R.id.et_obra_name);
+        Button btnDateObra = findViewById(R.id.btn_fecha_obra);
+        TextView tvDateObra = findViewById(R.id.tv_fecha);
+        final EditText etDireccionObra = findViewById(R.id.et_direccion);
+
+        Button btnCancelarObra = findViewById(R.id.btn_cancelar_obra);
+        btnCancelarObra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeViewPage(0);
+            }
+        });
+
+        Button btnAgregarObra = findViewById(R.id.btn_agregar_obra);
+        btnAgregarObra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateEmptyFields(etNameObra, etDireccionObra)){
+                    Toast.makeText(getBaseContext(), "Obra agregada", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        changeViewPage(4);
     }
 
     private void loadObrasNomina() {
@@ -315,5 +339,23 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     @Override
     public void addMaterials(int materialObraId, String materialType, String materialUnit, String materialQuantity, String materialProveedor, String materialDate, String materialPrice) {
         Log.d("MATERIAL: ", materialType + "-" + materialUnit + "-" + materialObraId);
+    }
+
+    public boolean validateEmptyFields(EditText etOne, EditText etTwo){
+        if(etOne.getText().toString().isEmpty() && etTwo != null && etTwo.getText().toString().isEmpty()){
+            etOne.setError("Campo no puede estar en blanco");
+            etTwo.setError("Campo no puede estar en blanco");
+            return false;
+        }else if(etOne.getText().toString().isEmpty()){
+            etOne.setError("Campo no puede estar en blanco");
+            return false;
+        }else if(etTwo != null && etTwo.getText().toString().isEmpty() ){
+            etTwo.setError("Campo no puede estar en blanco");
+            return false;
+        }else if(etOne.getText().toString().isEmpty() && etTwo == null){
+            etOne.setError("Campo no puede estar en blanco");
+            return false;
+        }
+        return true;
     }
 }
