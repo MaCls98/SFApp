@@ -22,8 +22,6 @@ import com.android.sfapp.model.Obra;
 
 import java.util.ArrayList;
 
-import static android.R.layout.*;
-
 public class AddMaterialDialog extends DialogFragment {
 
     private Spinner spMaterials;
@@ -45,7 +43,7 @@ public class AddMaterialDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_material, null);
+        View view = inflater.inflate(R.layout.home_nv_add_material, null);
 
         builder.setView(view)
         .setTitle("Agregar nuevo material")

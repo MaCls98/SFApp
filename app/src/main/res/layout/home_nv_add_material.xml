@@ -112,7 +112,8 @@
             android:id="@+id/btn_add_mat_fecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fecha de peticion" />
+            android:text="Fecha de peticion"
+            android:textAllCaps="false" />
 
         <TextView
             android:id="@+id/tv_add_mat_fecha"

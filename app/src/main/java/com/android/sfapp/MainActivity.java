@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     private ImageButton btnShowDrawer;
 
     private ViewPager vpHome;
+    private LayoutInflater inflater;
 
     private FloatingActionsMenu floatingButtonObra;
     private FloatingActionButton btnAddItem;
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(), "Agregar Obra", Toast.LENGTH_LONG).show();
+                initAddObra();
                 changeViewPage(4);
             }
         });
@@ -176,6 +179,10 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         });
         bottomNavigationView.setSelectedItemId(R.id.menu_maquinaria);
         loadObrasMaquinaria();
+    }
+
+    private void initAddObra() {
+
     }
 
     private void loadObrasNomina() {
