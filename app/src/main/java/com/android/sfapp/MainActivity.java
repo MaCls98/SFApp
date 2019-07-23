@@ -741,7 +741,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         isRequest = true;
                 } catch (JSONException e) {
-
                         e.printStackTrace();
                 }
             }
