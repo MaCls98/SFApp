@@ -7,13 +7,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/agregar_nomina"
+        android:text="Agregar maquinaria"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -34,20 +34,18 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btn_cancelar_nomina"
+            android:id="@+id/btn_cancelar_maquinaria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancelar"
-            android:textAllCaps="false" />
+            android:text="Cancelar" />
 
         <Button
-            android:id="@+id/btn_agregar_nomina"
+            android:id="@+id/btn_agregar_maquinaria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/agregar"
-            android:textAllCaps="false" />
+            android:text="Agregar" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,63 +56,29 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5">
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/et_maquinaria_nombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:text="@string/tgrfccrtgced">
+            android:ems="10"
+            android:hint="Nombre Maquinaria"
+            android:inputType="textPersonName" />
 
-            <EditText
-                android:id="@+id/et_nomina_nombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/nombre_trabajador"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/et_nomina_apellido"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/apellido_trabajador"
-                android:inputType="textPersonName" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_fecha_maquinaria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha de asignacion"
+            android:textAllCaps="false" />
 
         <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/selecciona_un_tipo_de_documento" />
-
-        <Spinner
-            android:id="@+id/sp_tipo_de_documento"
+            android:id="@+id/tv_date_maquinaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/et_nomina_telefono"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/telefono_trabajor"
-            android:inputType="phone" />
-
-        <EditText
-            android:id="@+id/et_nomina_salario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/salario_trabajador"
-            android:inputType="number" />
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
