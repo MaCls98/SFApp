@@ -18,7 +18,6 @@
         android:id="@+id/menu_maquinas_nomina"
         android:title="Maquinaria y nomina"
         android:icon="@drawable/maquinaria_nomina">
-
     </item>
 
     <item
