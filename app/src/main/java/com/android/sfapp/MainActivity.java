@@ -91,7 +91,9 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 //Agregar obra
                 R.layout.home_nv_add_obra,
                 //Agregar nomina
-                R.layout.home_add_nomina
+                R.layout.home_add_nomina,
+                //Agregar proveedor
+                R.layout.home_nv_add_material
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts, getBaseContext());
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         btnAddObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getBaseContext(), "Agregar obra", Toast.LENGTH_LONG).show();
                 initAddObra();
             }
         });
@@ -190,13 +193,23 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
     }
 
     private void initAddObra() {
-        //TEST
-        final EditText etNameObra = findViewById(R.id.et_obra_name);
-        Button btnDateObra = findViewById(R.id.btn_fecha_obra);
-        TextView tvDateObra = findViewById(R.id.tv_fecha);
-        final EditText etDireccionObra = findViewById(R.id.et_direccion);
+        changeViewPage(4);
+        View v = getLayoutInflater().inflate(R.layout.home_nv_add_obra, vpHome);
 
-        Button btnCancelarObra = findViewById(R.id.btn_cancelar_obra);
+        final EditText etNameObra = v.findViewById(R.id.et_obra_name);
+
+        Button btnDateObra = v.findViewById(R.id.btn_fecha_obra);
+        btnDateObra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        TextView tvDateObra = v.findViewById(R.id.tv_fecha);
+        final EditText etDireccionObra = v.findViewById(R.id.et_direccion);
+
+        Button btnCancelarObra = v.findViewById(R.id.btn_cancelar_obra);
         btnCancelarObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
             }
         });
 
-        Button btnAgregarObra = findViewById(R.id.btn_agregar_obra);
+        Button btnAgregarObra = v.findViewById(R.id.btn_agregar_obra);
         btnAgregarObra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,8 +226,6 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 }
             }
         });
-
-        changeViewPage(4);
     }
 
     private void loadObrasNomina() {
@@ -343,17 +354,16 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
 
     public boolean validateEmptyFields(EditText etOne, EditText etTwo){
         if(etOne.getText().toString().isEmpty() && etTwo != null && etTwo.getText().toString().isEmpty()){
-            etOne.setError("Campo no puede estar en blanco");
-            etTwo.setError("Campo no puede estar en blanco");
+            Toast.makeText(getBaseContext(), "Todos los campos deben estar completos", Toast.LENGTH_SHORT).show();
             return false;
         }else if(etOne.getText().toString().isEmpty()){
-            etOne.setError("Campo no puede estar en blanco");
+            Toast.makeText(getBaseContext(), "Todos los campos deben estar completos", Toast.LENGTH_SHORT).show();
             return false;
         }else if(etTwo != null && etTwo.getText().toString().isEmpty() ){
-            etTwo.setError("Campo no puede estar en blanco");
+            Toast.makeText(getBaseContext(), "Todos los campos deben estar completos", Toast.LENGTH_SHORT).show();
             return false;
         }else if(etOne.getText().toString().isEmpty() && etTwo == null){
-            etOne.setError("Campo no puede estar en blanco");
+            Toast.makeText(getBaseContext(), "Todos los campos deben estar completos", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
