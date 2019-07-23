@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
                 R.layout.home_frag_reportes,
                 //Obras
                 //Agregar obra
-                R.layout.home_nv_add_obra
+                R.layout.home_nv_add_obra,
+                //Agregar nomina
+                R.layout.home_nv_add_nomina
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts, getBaseContext());
