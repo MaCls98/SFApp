@@ -27,8 +27,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< Updated upstream
+=======
+import com.android.sfapp.model.Documentos;
+import com.android.sfapp.model.Machine;
+import com.android.sfapp.model.Material;
+>>>>>>> Stashed changes
 import com.android.sfapp.model.MaterialCV;
 import com.android.sfapp.model.Materials;
+import com.android.sfapp.model.Nomina;
 import com.android.sfapp.model.Obra;
 import com.android.sfapp.utils.DatePickerFragment;
 import com.android.sfapp.utils.HomeViewPagerAdapter;
@@ -71,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Spinner spObras;
     private ArrayAdapter<Obra> sAdapter;
+    private ArrayList<Machine> machines;
+    private ArrayList<Nomina> nominas;
+    private ArrayList<Material> materialList;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -747,4 +757,109 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getMateriales(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/materials")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        materialList.add(new Material(row.getInt("id_order"),
+                                row.getString("price_unit"),
+                                row.getString("quantity"),
+                                row.getString("name_provider"),
+                                row.getString("date_order"),
+                                row.getString("type_material"),
+                                row.getInt("id_oeuvre")));
+                    }
+                    Log.d("MATERIALES", materialList.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getMachines(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/machines")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        machines.add(new Machine(row.getInt("id_machine"),
+                                row.getString("name_machine"),
+                                row.getString("date_purchase"),
+                                row.getString("status_machine")));
+                    }
+                    Log.d("MAQUINAS", machines.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getNomina(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/employees")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("ERROR", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONArray array = new JSONArray(response.body().string());
+                    for (int i = 0; i < array.length(); i++){
+                        JSONObject row = array.getJSONObject(i);
+                        nominas.add(new Nomina(row.getInt("number_doc"),
+                                row.getString("type_doc"),
+                                row.getString("last_name"),
+                                row.getString("first_name"),
+                                row.getString("phone"),
+                                row.getString("email"),
+                                row.getString("salary")));
+                    }
+                    Log.d("NOMINA", nominas.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
 }
+
