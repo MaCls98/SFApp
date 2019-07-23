@@ -21,7 +21,7 @@ public enum Materials {
     private String materialType;
     private String materialUnit;
 
-    private Materials(String materialType, String materialUnit){
+    Materials(String materialType, String materialUnit){
         this.materialType = materialType;
         this.materialUnit = materialUnit;
     }
