@@ -51,17 +51,6 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_add_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_frag_materials"
-        app:layout_constraintEnd_toEndOf="@+id/rv_frag_materials"
-        app:srcCompat="@mipmap/ic_launcher_round" />
-
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -99,5 +88,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline15"
         app:menu="@menu/obras_menu" />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/btn_add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        app:fab_addButtonColorNormal="@color/colorPrimary"
+        app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+        app:fab_addButtonSize="normal"
+        app:fab_labelStyle="@style/Etiquetas"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_frag_materials"
+        app:layout_constraintEnd_toEndOf="@+id/rv_frag_materials">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_proveedor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/add_encargado"
+            app:fab_size="mini"
+            app:fab_title="Agregar proveedor" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_item_obra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/materiales"
+            app:fab_size="mini"
+            app:fab_title="" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_obra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/maquinaria"
+            app:fab_size="mini"
+            app:fab_title="Agregar nueva obra" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </android.support.constraint.ConstraintLayout>

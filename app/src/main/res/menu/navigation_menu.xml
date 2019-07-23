@@ -8,15 +8,15 @@
     </item>
 
     <item
-        android:id="@+id/menu_proveedores"
-        android:title="Proveedores"
+        android:id="@+id/menu_encargados"
+        android:title="Encargados"
         android:icon="@drawable/maquinaria">
 
     </item>
 
     <item
-        android:id="@+id/menu_citas"
-        android:title="Citas"
+        android:id="@+id/menu_maquinas_nomina"
+        android:title="Maquinaria y nomina"
         android:icon="@drawable/maquinaria">
 
     </item>

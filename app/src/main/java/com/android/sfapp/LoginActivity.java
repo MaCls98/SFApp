@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view){
-        Intent homeActivity = new Intent(getBaseContext(), HomeActivity.class);
+        Intent homeActivity = new Intent(getBaseContext(), MainActivity.class);
         startActivity(homeActivity);
         finish();
     }

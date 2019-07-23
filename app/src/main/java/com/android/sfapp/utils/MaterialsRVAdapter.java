@@ -22,6 +22,7 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
         public TextView tvQuantity;
         public TextView tvDate;
         public TextView tvPrice;
+        public TextView tvProveedor;
 
         public MaterialsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -29,6 +30,7 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
             tvQuantity = itemView.findViewById(R.id.tv_quantity);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvPrice = itemView.findViewById(R.id.tv_price);
+            tvProveedor = itemView.findViewById(R.id.tv_proveedor);
         }
     }
 
@@ -49,9 +51,10 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
         MaterialCV material = materials.get(position);
 
         holder.tvMaterialType.setText(material.getMaterialType());
-        holder.tvDate.setText(material.getDate());
-        holder.tvPrice.setText(material.getPrice());
-        holder.tvQuantity.setText(material.getPrice());
+        holder.tvDate.setText(material.getMaterialDate());
+        holder.tvPrice.setText(material.getMaterialPrice());
+        holder.tvQuantity.setText(material.getMaterialQuantity() + " " + material.getMaterialUnit());
+        holder.tvProveedor.setText(material.getMaterialProveedor());
     }
 
     @Override
