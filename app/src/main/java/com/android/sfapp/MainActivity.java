@@ -327,6 +327,9 @@ public class MainActivity extends AppCompatActivity implements AddMaterialDialog
         Button btnFecha = v.findViewById(R.id.btn_add_mat_fecha);
         final TextView tvFecha = v.findViewById(R.id.tv_add_mat_fecha);
         final Spinner spNombreObra = v.findViewById(R.id.sp_add_mat_obra);
+        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, obras);
+        sAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spNombreObra.setAdapter(sAdapter);
         Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
         Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
         btnFecha.setOnClickListener(new View.OnClickListener() {
