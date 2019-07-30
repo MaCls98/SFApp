@@ -37,9 +37,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-black"
-                android:text="TextView"
+                android:text="Selecciona una opcion para empezar"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_top"
+                android:layout_width="47dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="4dp"
+                android:padding="1dp" />
         </FrameLayout>
 
         <android.support.constraint.Guideline

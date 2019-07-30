@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etDoc;
     private EditText etPassword;
+    private Button btnLogin;
 
     private boolean isLogin = false;
 
@@ -49,25 +51,18 @@ public class LoginActivity extends AppCompatActivity {
 
         etDoc = findViewById(R.id.et_doc_num);
         etPassword = findViewById(R.id.et_password);
+        btnLogin = findViewById(R.id.btn_login);
     }
 
     public void login(View view){
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                sendUserInfo();
-            }
-        };
-        Handler h = new Handler();
-        h.postDelayed(r, 2000);
-        if (isLogin){
-            Intent homeActivity = new Intent(getBaseContext(), MainActivity.class);
-            startActivity(homeActivity);
-            finish();
-        }else {
-            Toast.makeText(this, "Verifica el numero de documento y la contraseña", Toast.LENGTH_SHORT).show();
-        }
-        
+        sendUserInfo();
+        btnLogin.setEnabled(false);
+    }
+
+    private void launchHome(){
+        Intent homeActivity = new Intent(getBaseContext(), MainActivity.class);
+        startActivity(homeActivity);
+        finish();
     }
 
     private void sendUserInfo() {
@@ -87,14 +82,34 @@ public class LoginActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d("ERROR", e.getMessage());
-                isLogin = false;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this, "Revisa tu conexion a internet y vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                        btnLogin.setEnabled(true);
+                    }
+                });
+
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d("MATERIALES", response.body().string());
-                isLogin = true;
+                if (!response.isSuccessful()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, "Verifica tus datos y vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                            btnLogin.setEnabled(true);
+                        }
+                    });
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            launchHome();
+                        }
+                    });
+                }
             }
         });
     }
