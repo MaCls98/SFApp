@@ -1,7 +1,10 @@
 package com.android.sfapp.utils;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -66,7 +69,11 @@ public class EncargadosRVAdapter extends RecyclerView.Adapter<EncargadosRVAdapte
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             listener.changeStatus(position);
-                            btnStatus.setVisibility(View.VISIBLE);
+                            if (btnStatus.getVisibility() == View.VISIBLE){
+                                btnStatus.setVisibility(View.GONE);
+                            }else {
+                                btnStatus.setVisibility(View.VISIBLE);
+                            }
                             return true;
                         }
                     }
@@ -88,6 +95,14 @@ public class EncargadosRVAdapter extends RecyclerView.Adapter<EncargadosRVAdapte
                     }
                 }
             });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                StateListAnimator stateListAnimator = AnimatorInflater.loadStateListAnimator(
+                        itemView.getContext(),
+                        R.animator.lift_on_tocuh
+                );
+                itemView.setStateListAnimator(stateListAnimator);
+            }
         }
     }
 

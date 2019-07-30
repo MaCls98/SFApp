@@ -132,9 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
         final NavigationView nav_view = findViewById(R.id.nav_view);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //Acciones que se realizan en cada accion del drawer, como cambiar pagina
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -143,17 +140,19 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.menu_obras:
                         tvDrawerTitle.setText("Obras - Seleccion una opcion");
                         changeViewPage(0);
+                        dl.closeDrawer(Gravity.START);
                         break;
 
                     case R.id.menu_encargados:
                         tvDrawerTitle.setText("Encargados - Seleccion una opcion");
                         changeViewPage(1);
+                        dl.closeDrawer(Gravity.START);
                         break;
 
                     case R.id.menu_maquinas_nomina:
                         tvDrawerTitle.setText("Maquinaria y Nomina - Seleccion una opcion");
                         changeViewPage(2);
-                        initMaquiNomina();
+                        dl.closeDrawer(Gravity.START);
                         break;
                 }
                 return true;
@@ -163,50 +162,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dl.openDrawer(Gravity.START);
-            }
-        });
-    }
-
-    private void initMaquiNomina() {
-        View v = getLayoutInflater().inflate(R.layout.home_frag_maq_nom, vpHome);
-
-        final FloatingActionsMenu floatingButtonMaqNom = v.findViewById(R.id.fl);
-
-        final FloatingActionButton btnAddMaqNom = v.findViewById(R.id.btn_add_maq_nom);
-        BottomNavigationView bottomMaqNom = v.findViewById(R.id.bottom_maq_nom);
-        bottomMaqNom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.menu_list_maquinaria:
-                        floatingButtonMaqNom.collapse();
-                        Toast.makeText(MainActivity.this, "Lista maquinas",
-                                Toast.LENGTH_SHORT).show();
-
-                        btnAddMaqNom.setTitle("Agregar maquinaria");
-                        btnAddMaqNom.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                initAddMaquinaria();
-                            }
-                        });
-                        break;
-
-                    case R.id.menu_list_nomina:
-                        floatingButtonMaqNom.collapse();
-                        Toast.makeText(MainActivity.this, "Lista nomina",
-                                Toast.LENGTH_SHORT).show();
-
-                        btnAddMaqNom.setTitle("Agregar nomina");
-                        btnAddMaqNom.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                initAddNomina();
-                            }
-                        });
-                        break;
-                }
-                return true;
             }
         });
     }
@@ -227,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 tvDrawerTitle.setText("Maquinaria y Nomina");
                 changeViewPage(2);
-                initMaquiNomina();
             }
         });
 
@@ -239,6 +193,54 @@ public class MainActivity extends AppCompatActivity {
                         etTelefono) && validateEmptyFields(etSalario, null)){
 
                     uploadNomina(etNombre, etApellido, etNumDoc, etTelefono, etSalario);
+                }
+            }
+        });
+    }
+
+    private void initAddMaterial() {
+        changeViewPage(5);
+        View v = getLayoutInflater().inflate(R.layout.home_nv_add_material, vpHome);
+        final Spinner spMaterial = v.findViewById(R.id.sp_add_mat_type);
+        spMaterial.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_item, Materials.values()));
+        final EditText tvPrecioUnitario = v.findViewById(R.id.et_add_mat_precio);
+        final EditText tvCantidad = v.findViewById(R.id.et_add_mat_cantidad);
+        final EditText tvProveedor = v.findViewById(R.id.et_add_mat_proveedor);
+        Button btnFecha = v.findViewById(R.id.btn_add_mat_fecha);
+        final TextView tvFecha = v.findViewById(R.id.tv_add_mat_fecha);
+        final Spinner spNombreObra = v.findViewById(R.id.sp_add_mat_obra);
+        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, obras);
+        sAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spNombreObra.setAdapter(sAdapter);
+        Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
+        Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
+        btnFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(tvFecha);
+            }
+        });
+
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvDrawerTitle.setText("Obras");
+                changeViewPage(0);
+            }
+        });
+
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validateEmptyFields(tvPrecioUnitario, tvCantidad)
+                        && validateEmptyFields(tvProveedor, null) && selectedDate != null){
+
+                    String [] values = spMaterial.getSelectedItem().toString().split(",");
+                    addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString()
+                            , tvProveedor.getText().toString(), tvFecha.getText().toString(),
+                            values[1], getObraId(spNombreObra.getSelectedItem().toString()));
                 }
             }
         });
@@ -264,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 tvDrawerTitle.setText("Maquinaria y Nomina");
                 changeViewPage(2);
-                initMaquiNomina();
             }
         });
 
@@ -489,7 +490,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager lmEncargados = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
-        encargadosActivos.clear();
 
         EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosActivos, 0);
 
@@ -533,7 +533,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager lmEncargados = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
-        encargadosActivos.clear();
 
         EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosInactivos, 0);
 
@@ -563,52 +562,49 @@ public class MainActivity extends AppCompatActivity {
         getEncargados(encargadosRVAdapter);
     }
 
-    private void initAddMaterial() {
-        changeViewPage(5);
-        View v = getLayoutInflater().inflate(R.layout.home_nv_add_material, vpHome);
-        final Spinner spMaterial = v.findViewById(R.id.sp_add_mat_type);
-        spMaterial.setAdapter(new ArrayAdapter<>(getApplicationContext(),
-                android.R.layout.simple_spinner_item, Materials.values()));
-        final EditText tvPrecioUnitario = v.findViewById(R.id.et_add_mat_precio);
-        final EditText tvCantidad = v.findViewById(R.id.et_add_mat_cantidad);
-        final EditText tvProveedor = v.findViewById(R.id.et_add_mat_proveedor);
-        Button btnFecha = v.findViewById(R.id.btn_add_mat_fecha);
-        final TextView tvFecha = v.findViewById(R.id.tv_add_mat_fecha);
-        final Spinner spNombreObra = v.findViewById(R.id.sp_add_mat_obra);
-        ArrayAdapter<Obra> sAdapter = new ArrayAdapter<>(getApplicationContext(),
-                android.R.layout.simple_spinner_dropdown_item, obras);
-        sAdapter.setDropDownViewResource(R.layout.spinner_item);
-        spNombreObra.setAdapter(sAdapter);
-        Button btnCancelar = v.findViewById(R.id.btn_add_mat_cancel);
-        Button btnAgregar = v.findViewById(R.id.btn_add_mat_confirm);
-        btnFecha.setOnClickListener(new View.OnClickListener() {
+    //MAQUINARIA Y NOMINA
+    public void loadAllMaquinaria(View view){
+        tvDrawerTitle.setText("M y N - Total de maquinaria");
+        ivTop.setImageResource(R.drawable.block_encargado);
+        FloatingActionButton btnAddMaquinaria = findViewById(R.id.btn_add_maq_nom);
+        btnAddMaquinaria.setTitle("Agregar maquinaria");
+        btnAddMaquinaria.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                showDatePickerDialog(tvFecha);
+            public void onClick(View v) {
+                initAddMaquinaria();
             }
         });
 
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
+        RecyclerView rvMaqNom = findViewById(R.id.rv_maq_nom);
+
+        RecyclerView.LayoutManager lmMaqNom = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        MaquinariaRVAdapter maquinariaRVAdapter = new MaquinariaRVAdapter(machines);
+        rvMaqNom.setLayoutManager(lmMaqNom);
+        rvMaqNom.setAdapter(maquinariaRVAdapter);
+        getMachines(maquinariaRVAdapter);
+    }
+
+    public void loadAllNomina(View view){
+        tvDrawerTitle.setText("M y N - Total de nomina");
+        ivTop.setImageResource(R.drawable.block_encargado);
+
+        FloatingActionButton btnAddMaquinaria = findViewById(R.id.btn_add_maq_nom);
+        btnAddMaquinaria.setTitle("Agregar maquinaria");
+        btnAddMaquinaria.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                tvDrawerTitle.setText("Obras");
-                changeViewPage(0);
+            public void onClick(View v) {
+                initAddNomina();
             }
         });
 
-        btnAgregar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validateEmptyFields(tvPrecioUnitario, tvCantidad)
-                        && validateEmptyFields(tvProveedor, null) && selectedDate != null){
-
-                    String [] values = spMaterial.getSelectedItem().toString().split(",");
-                    addMaterial(tvPrecioUnitario.getText().toString(), tvCantidad.getText().toString()
-                            , tvProveedor.getText().toString(), tvFecha.getText().toString(),
-                            values[1], getObraId(spNombreObra.getSelectedItem().toString()));
-                }
-            }
-        });
+        RecyclerView rvMaqNom = findViewById(R.id.rv_maq_nom);
+        RecyclerView.LayoutManager lmMaqNom = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        NominaRVAdapter nominaRVAdapter = new NominaRVAdapter(nominas);
+        rvMaqNom.setLayoutManager(lmMaqNom);
+        rvMaqNom.setAdapter(nominaRVAdapter);
+        getNomina(nominaRVAdapter);
     }
 
     @Override

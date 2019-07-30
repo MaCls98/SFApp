@@ -6,32 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_maq_nom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorPrimaryDark"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline9"
-        app:menu="@menu/menu_maq_nomina" />
-
     <android.support.constraint.Guideline
         android:id="@+id/guideline9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.92" />
+        app:layout_constraintGuide_percent="0.93" />
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         app:fab_addButtonColorNormal="@color/colorPrimary"
         app:fab_addButtonColorPressed="@color/colorPrimaryDark"
         app:fab_addButtonSize="normal"
@@ -50,11 +37,48 @@
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_maq_nom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline9">
+
+        <Button
+            android:id="@+id/btn_tot_maquinas"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="1dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryDark"
+            android:text="Total de maquinas"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:onClick="loadAllMaquinaria"/>
+
+        <Button
+            android:id="@+id/btn_tot_nom"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryDark"
+            android:text="Total de nomina"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:onClick="loadAllNomina"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
