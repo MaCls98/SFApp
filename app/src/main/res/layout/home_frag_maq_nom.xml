@@ -18,7 +18,8 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
         app:layout_constraintEnd_toEndOf="@+id/rv_maq_nom"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_maq_nom" />
+        app:layout_constraintTop_toTopOf="@+id/rv_maq_nom"
+        android:visibility="gone"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline9"

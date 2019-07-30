@@ -1206,13 +1206,6 @@ public class MainActivity extends AppCompatActivity {
                             encargadosInactivos.add(encargado);
                         }
                     }
-                    encargadosInactivos.add(new Encargado(
-                            1049655163,
-                            "Celis",
-                            "Manuel",
-                            "3212142066",
-                            "D"
-                    ));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

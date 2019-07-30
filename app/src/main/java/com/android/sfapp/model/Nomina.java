@@ -1,5 +1,7 @@
 package com.android.sfapp.model;
 
+import java.util.ArrayList;
+
 public class Nomina {
 
     private int numberDoc;
