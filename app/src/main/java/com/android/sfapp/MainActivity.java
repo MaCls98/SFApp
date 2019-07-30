@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -743,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ((TextView) spObras.getSelectedView())
-                        .setTextColor(getResources().getColor(R.color.colorBack));
+                        .setTextColor(getResources().getColor(R.color.colorBlack));
             }
 
             @Override
@@ -1062,6 +1063,74 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void asignarNomina(int id_oeuvre, String number_doc, String date_assignment){
+        OkHttpClient client = new OkHttpClient();
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject asignar = new JSONObject();
+
+        try{
+            asignar.put("id_oeuvre", id_oeuvre);
+            asignar.put("number_doc", number_doc);
+            asignar.put("date_assignment", date_assignment);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON, asignar.toString());
+
+        Request request = new Request.Builder()
+                .url(HOST + "/persons/toOeuvre")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Revisa tu conexion a internet y vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (!response.isSuccessful()){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "Ocurrio un error, vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+            }
+        });
+    }
+
+    private void asignaMaquinaria(int id_oeuvre, int id_machine, String date_start){
+        OkHttpClient client = new OkHttpClient();
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject asignar = new JSONObject();
+
+        try{
+            asignar.put("id_oeuvre", id_oeuvre);
+            asignar.put("id_machine", id_machine);
+            asignar.put("date_start", date_start);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+
+        RequestBody requestBody = RequestBody.create(JSON, asignar.toString());
+
+        Request request = new Request.Builder()
+                .url(HOST + "/machines/toOeuvre")
+                .post(requestBody)
+                .build();
     }
 
     private void getEncargados(final EncargadosRVAdapter encargadosRVAdapter) {
