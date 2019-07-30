@@ -1131,6 +1131,30 @@ public class MainActivity extends AppCompatActivity {
                 .url(HOST + "/machines/toOeuvre")
                 .post(requestBody)
                 .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Revisa tu conexion a internet y vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Ocurrio un error vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void getEncargados(final EncargadosRVAdapter encargadosRVAdapter) {
