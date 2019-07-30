@@ -284,27 +284,48 @@ public class MainActivity extends AppCompatActivity {
 
     private void addEncargado() {
         changeViewPage(6);
-        View v = getLayoutInflater().inflate(R.layout.home_add_nomina, vpHome);
-        LinearLayout llFields = v.findViewById(R.id.ll_fields);
+        LinearLayout llFields = findViewById(R.id.ll_fields);
         final EditText etPassword = new EditText(this);
         etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
         etPassword.setHint("Contraseña del encargado");
+        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (etPassword.getText().toString().trim().length() < 5) {
+                        etPassword.setError("Failed");
+                    } else {
+                        // your code here
+                        etPassword.setError(null);
+                    }
+                } else {
+                    if (etPassword.getText().toString().trim().length() < 5) {
+                        etPassword.setError("Failed");
+                    } else {
+                        // your code here
+                        etPassword.setError(null);
+                    }
+                }
+
+            }
+        });
+
         llFields.addView(etPassword);
-        TextView tvTitle = v.findViewById(R.id.tv_title);
+        TextView tvTitle = findViewById(R.id.tv_title);
         tvTitle.setHint("Agregar Encargado");
-        final EditText etNombre = v.findViewById(R.id.et_nomina_nombre);
+        final EditText etNombre = findViewById(R.id.et_nomina_nombre);
         etNombre.setHint("Nombre encargado");
-        final EditText etApellido = v.findViewById(R.id.et_nomina_apellido);
+        final EditText etApellido = findViewById(R.id.et_nomina_apellido);
         etApellido.setHint("Apellido encargado");
 
-        final EditText etNumDoc = v.findViewById(R.id.et_doc_num);
-        final EditText etTelefono = v.findViewById(R.id.et_nomina_telefono);
+        final EditText etNumDoc = findViewById(R.id.et_doc_num);
+        final EditText etTelefono = findViewById(R.id.et_nomina_telefono);
         etTelefono.setHint("Telefono encargado");
-        final EditText etSalario = v.findViewById(R.id.et_nomina_salario);
+        final EditText etSalario = findViewById(R.id.et_nomina_salario);
         etSalario.setText("0");
         etSalario.setVisibility(View.GONE);
 
-        Button btnCancelar = v.findViewById(R.id.btn_cancelar_nomina);
+        Button btnCancelar = findViewById(R.id.btn_cancelar_nomina);
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -313,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnAgregar = v.findViewById(R.id.btn_agregar_nomina);
+        Button btnAgregar = findViewById(R.id.btn_agregar_nomina);
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -500,7 +521,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager lmEncargados = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
 
-        EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosActivos, 0);
+        final EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosActivos, 0);
 
         encargadosRVAdapter.setOnItemClickListener(new EncargadosRVAdapter.OnItemClickListener() {
             @Override
@@ -519,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
         encargadosRVAdapter.setOnItemClickListener(new EncargadosRVAdapter.OnItemClickListener() {
             @Override
             public void uploadStatus(int position) {
-                Log.d("ENC", encargadosActivos.get(position).toString());
+                disableEncargado(encargadosActivos.get(position).getNumberDoc(), encargadosRVAdapter);
             }
         });
 
@@ -543,7 +564,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager lmEncargados = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
 
-        EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosInactivos, 0);
+        final EncargadosRVAdapter encargadosRVAdapter = new EncargadosRVAdapter(encargadosInactivos, 0);
 
         encargadosRVAdapter.setOnItemClickListener(new EncargadosRVAdapter.OnItemClickListener() {
             @Override
@@ -562,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
         encargadosRVAdapter.setOnItemClickListener(new EncargadosRVAdapter.OnItemClickListener() {
             @Override
             public void uploadStatus(int position) {
-                Log.d("ENC", encargadosInactivos.get(position).toString());
+                enableEncargado(encargadosInactivos.get(position).getNumberDoc(), encargadosRVAdapter);
             }
         });
 
@@ -906,6 +927,100 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void disableEncargado(int numberDoc, final EncargadosRVAdapter adapter) {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject encargado = new JSONObject();
+        try {
+            encargado.put("status_user", "D");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON, encargado.toString());
+
+        final Request request = new Request.Builder()
+                .url(HOST + "/persons/changeStatusU/" + numberDoc)
+                .method("PUT", requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Verifica tu conexion a internet y vuelve a intentarlo", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Ocurrio un error, por favor vuelve a intentarlo", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else {
+                    getEncargados(adapter);
+                }
+            }
+        });
+
+
+    }
+
+    private void enableEncargado(int numberDoc, final EncargadosRVAdapter adapter) {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject encargado = new JSONObject();
+        try {
+            encargado.put("status_user", "H");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON, encargado.toString());
+
+        final Request request = new Request.Builder()
+                .url(HOST + "/persons/changeStatusU/" + numberDoc)
+                .method("PUT", requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Verifica tu conexion a internet y vuelve a intentarlo", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Ocurrio un error, por favor vuelve a intentarlo", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else {
+                    getEncargados(adapter);
+                }
+            }
+        });
+
+
     }
 
     public void getObras(final Spinner spObras){

@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -90,6 +89,7 @@ public class EncargadosRVAdapter extends RecyclerView.Adapter<EncargadosRVAdapte
                             int position = getAdapterPosition();
                             if (position != RecyclerView.NO_POSITION){
                                 listener2.uploadStatus(position);
+                                btnStatus.setEnabled(false);
                             }
                         }
                     }
