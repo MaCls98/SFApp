@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -364,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
 
     //OBRAS
     public void loadObrasNomina(View view) {
+        ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Nomina");
         ivTop.setImageResource(R.drawable.nomina);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
@@ -400,10 +402,11 @@ public class MainActivity extends AppCompatActivity {
         NominaRVAdapter nominaRVAdapter = new NominaRVAdapter(nominas);
         rvObra.setLayoutManager(lmNomina);
         rvObra.setAdapter(nominaRVAdapter);
-        getNomina(nominaRVAdapter);
+        getNomina(nominaRVAdapter, pbObras);
     }
 
     public void loadObrasMaquinaria(View view) {
+        ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Maquinaria");
         ivTop.setImageResource(R.drawable.maquinaria);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
@@ -433,10 +436,11 @@ public class MainActivity extends AppCompatActivity {
         rvObra.setLayoutManager(lmMaquinaria);
         rvObra.setAdapter(maquinariaRVAdapter);
 
-        getMachines(maquinariaRVAdapter);
+        getMachines(maquinariaRVAdapter, pbObras);
     }
 
     public void loadObrasMateriales(View view) {
+        ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Materiales");
         ivTop.setImageResource(R.drawable.materiales);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
@@ -464,18 +468,20 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager lmMaterials = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
 
-        for (Material m:
-                materialList) {
-            materials.add(new MaterialCV(m.getIdOrder(), m.getIdOeuvre(), m.getTypeMaterial(),
-                    "n", m.getQuantity(), m.getNameProvider(), m.getDateOrder(), m.getPriceUni()));
-        }
-
         Log.d("MAT", materials.toString());
 
         MaterialsRVAdapter maquinariaAdapter = new MaterialsRVAdapter(materials);
         rvObra.setLayoutManager(lmMaterials);
         rvObra.setAdapter(maquinariaAdapter);
-        getMateriales(maquinariaAdapter);
+        getMateriales(maquinariaAdapter, pbObras);
+    }
+
+    private void matList() {
+        for (Material m:
+                materialList) {
+            materials.add(new MaterialCV(m.getIdOrder(), m.getIdOeuvre(), m.getTypeMaterial(),
+                    "n", m.getQuantity(), m.getNameProvider(), m.getDateOrder(), m.getPriceUni()));
+        }
     }
 
     //ENCARGADOS
@@ -567,6 +573,7 @@ public class MainActivity extends AppCompatActivity {
 
     //MAQUINARIA Y NOMINA
     public void loadAllMaquinaria(View view){
+        ProgressBar pbObras = findViewById(R.id.pb_maq_nom);
         tvDrawerTitle.setText("M y N - Total de maquinaria");
         ivTop.setImageResource(R.drawable.block_encargado);
         FloatingActionButton btnAddMaquinaria = findViewById(R.id.btn_add_maq_nom);
@@ -585,10 +592,11 @@ public class MainActivity extends AppCompatActivity {
         MaquinariaRVAdapter maquinariaRVAdapter = new MaquinariaRVAdapter(machines);
         rvMaqNom.setLayoutManager(lmMaqNom);
         rvMaqNom.setAdapter(maquinariaRVAdapter);
-        getMachines(maquinariaRVAdapter);
+        getMachines(maquinariaRVAdapter, pbObras);
     }
 
     public void loadAllNomina(View view){
+        ProgressBar pbObras = findViewById(R.id.pb_maq_nom);
         tvDrawerTitle.setText("M y N - Total de nomina");
         ivTop.setImageResource(R.drawable.block_encargado);
 
@@ -607,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
         NominaRVAdapter nominaRVAdapter = new NominaRVAdapter(nominas);
         rvMaqNom.setLayoutManager(lmMaqNom);
         rvMaqNom.setAdapter(nominaRVAdapter);
-        getNomina(nominaRVAdapter);
+        getNomina(nominaRVAdapter, pbObras);
     }
 
     @Override
@@ -942,10 +950,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getMateriales(final MaterialsRVAdapter maquinariaAdapter){
+    public void getMateriales(final MaterialsRVAdapter maquinariaAdapter, final ProgressBar pb){
+        pb.setVisibility(View.VISIBLE);
         OkHttpClient client = new OkHttpClient();
-        materialList.clear();
         materials.clear();
+        materialList.clear();
         Request request = new Request.Builder()
                 .url(HOST + "/materials")
                 .build();
@@ -975,6 +984,8 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            matList();
+                            pb.setVisibility(View.GONE);
                             maquinariaAdapter.notifyDataSetChanged();
                         }
                     });
@@ -985,7 +996,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getMachines(final MaquinariaRVAdapter maquinariaRVAdapter){
+    public void getMachines(final MaquinariaRVAdapter maquinariaRVAdapter, final ProgressBar pb){
+        pb.setVisibility(View.VISIBLE);
         OkHttpClient client = new OkHttpClient();
         machines.clear();
         Request request = new Request.Builder()
@@ -1013,6 +1025,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            pb.setVisibility(View.GONE);
                             maquinariaRVAdapter.notifyDataSetChanged();
                         }
                     });
@@ -1024,7 +1037,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getNomina(final NominaRVAdapter maquinariaRVAdapter){
+    public void getNomina(final NominaRVAdapter maquinariaRVAdapter, final ProgressBar pb){
+        pb.setVisibility(View.VISIBLE);
         OkHttpClient client = new OkHttpClient();
         nominas.clear();
         Request request = new Request.Builder()
@@ -1054,6 +1068,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            pb.setVisibility(View.GONE);
                             maquinariaRVAdapter.notifyDataSetChanged();
                         }
                     });
