@@ -47,4 +47,17 @@ public class Material {
     public int getIdOeuvre() {
         return idOeuvre;
     }
+
+    @Override
+    public String toString() {
+        return "Material{" +
+                "idOrder=" + idOrder +
+                ", priceUni='" + priceUni + '\'' +
+                ", quantity='" + quantity + '\'' +
+                ", nameProvider='" + nameProvider + '\'' +
+                ", dateOrder='" + dateOrder + '\'' +
+                ", typeMaterial='" + typeMaterial + '\'' +
+                ", idOeuvre=" + idOeuvre +
+                '}';
+    }
 }

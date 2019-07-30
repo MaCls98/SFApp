@@ -469,6 +469,8 @@ public class MainActivity extends AppCompatActivity {
                     "n", m.getQuantity(), m.getNameProvider(), m.getDateOrder(), m.getPriceUni()));
         }
 
+        Log.d("MAT", materials.toString());
+
         MaterialsRVAdapter maquinariaAdapter = new MaterialsRVAdapter(materials);
         rvObra.setLayoutManager(lmMaterials);
         rvObra.setAdapter(maquinariaAdapter);
@@ -968,6 +970,7 @@ public class MainActivity extends AppCompatActivity {
                                 row.getString("type_material"),
                                 row.getInt("id_oeuvre")));
                     }
+                    Log.d("MAT", materialList.toString());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

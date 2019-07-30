@@ -29,6 +29,8 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -68,11 +70,17 @@ public class LoginActivity extends AppCompatActivity {
     private void sendUserInfo() {
         OkHttpClient client = new OkHttpClient();
 
-        FormBody.Builder formBuilder = new FormBody.Builder()
-                .add("number_doc", etDoc.getText().toString())
-                .add("password", etPassword.getText().toString());
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject login = new JSONObject();
 
-        RequestBody requestBody = formBuilder.build();
+        try {
+            login.put("number_doc", etDoc.getText().toString());
+            login.put("password", etPassword.getText().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON, login.toString());
 
         Request request = new Request.Builder()
                 .url(HOST + "/persons/auth")
@@ -103,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 }else {
+                    String r = response.body().string();
+                    Log.d("LOG", r);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

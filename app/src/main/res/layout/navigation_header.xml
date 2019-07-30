@@ -6,21 +6,32 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
+    <TextClock
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:format12Hour="hh:mm:ss a"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:gravity="center_horizontal"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="130dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/nomina" />
+        android:background="@drawable/engineer" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="Cesar Sierra"
-        android:textColor="@color/colorBack"
-        android:textSize="30sp" />
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
 
 </LinearLayout>
