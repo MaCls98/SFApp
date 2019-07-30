@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Spinner
-            android:id="@+id/sp_obras"
+            android:id="@+id/sp_maq_obras"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

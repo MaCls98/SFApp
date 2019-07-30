@@ -13,14 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.36" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.97" />
+        app:layout_constraintGuide_percent="0.86" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
@@ -58,10 +58,11 @@
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/s_f_app"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -103,6 +104,7 @@
                 android:hint="@string/ingresa_tu_numero_de_documento"
                 android:inputType="number"
                 android:paddingLeft="8dp"
+                android:text="1049634343"
                 android:textColor="@android:color/black" />
         </android.support.design.widget.TextInputLayout>
 
@@ -123,7 +125,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/introduce_tu_contrase_a"
                 android:inputType="textPassword"
-                android:paddingLeft="8dp" />
+                android:paddingLeft="8dp"
+                android:text="cesarSIERRA" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.constraint.Guideline

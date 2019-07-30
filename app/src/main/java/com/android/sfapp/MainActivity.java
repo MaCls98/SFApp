@@ -2,7 +2,6 @@ package com.android.sfapp;
 
 import android.app.DatePickerDialog;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -43,7 +42,11 @@ import com.android.sfapp.utils.MaquinariaRVAdapter;
 import com.android.sfapp.utils.MaterialsRVAdapter;
 import com.android.sfapp.utils.NominaRVAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.shockwave.pdfium.PdfDocument;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -52,6 +55,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -62,14 +66,21 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener {
 
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String SAMPLE_FILE = "test.pdf";
+    PDFView pdfView;
+    Integer pageNumber = 0;
+    String pdfFileName;
+
     private TextView tvDrawerTitle;
     private ImageButton btnShowDrawer;
     private ImageView ivTop;
+    private ImageView ivWelcome;
 
     private ViewPager vpHome;
 
@@ -100,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         tvDrawerTitle = findViewById(R.id.tv_drawer_title);
         btnShowDrawer = findViewById(R.id.btn_drawer);
         ivTop = findViewById(R.id.iv_top);
+        ivWelcome = findViewById(R.id.iv_wellcome);
 
         obras = new ArrayList<>();
 
@@ -120,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
                 R.layout.home_add_nomina,
                 //Agregar maquinaria
                 R.layout.home_add_maquinaria,
+                //Manual de usuario
+                R.layout.home_manual,
+                //Asignar maquina
+                R.layout.home_assign_maquina
+
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts,
@@ -141,19 +158,30 @@ public class MainActivity extends AppCompatActivity {
                 switch (id){
                     case R.id.menu_obras:
                         tvDrawerTitle.setText("Obras - Seleccion una opcion");
+                        ivTop.setImageResource(R.drawable.obra);
                         changeViewPage(0);
                         dl.closeDrawer(Gravity.START);
                         break;
 
                     case R.id.menu_encargados:
                         tvDrawerTitle.setText("Encargados - Seleccion una opcion");
+                        ivTop.setImageResource(R.drawable.active_encargado);
                         changeViewPage(1);
                         dl.closeDrawer(Gravity.START);
                         break;
 
                     case R.id.menu_maquinas_nomina:
                         tvDrawerTitle.setText("Maquinaria y Nomina - Seleccion una opcion");
+                        ivTop.setImageResource(R.drawable.maquinaria_nomina);
                         changeViewPage(2);
+                        dl.closeDrawer(Gravity.START);
+                        break;
+
+                    case R.id.menu_ayuda:
+                        tvDrawerTitle.setText("Manual de usuario");
+                        ivTop.setImageResource(R.drawable.information);
+                        changeViewPage(8);
+                        showManual();
                         dl.closeDrawer(Gravity.START);
                         break;
                 }
@@ -389,9 +417,10 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Nomina");
         ivTop.setImageResource(R.drawable.nomina);
+        ivWelcome.setVisibility(View.GONE);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
         final FloatingActionButton btnAddItem = findViewById(R.id.add_item_obra);
-        Spinner spObras = findViewById(R.id.sp_obras);
+        Spinner spObras = findViewById(R.id.sp_maq_obras);
         spObras.setVisibility(View.VISIBLE);
         getObras(spObras);
         FloatingActionButton btnAddObra = findViewById(R.id.add_obra);
@@ -430,9 +459,10 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Maquinaria");
         ivTop.setImageResource(R.drawable.maquinaria);
+        ivWelcome.setVisibility(View.GONE);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
         final FloatingActionButton btnAddItem = findViewById(R.id.add_item_obra);
-        Spinner spObras = findViewById(R.id.sp_obras);
+        Spinner spObras = findViewById(R.id.sp_maq_obras);
         spObras.setVisibility(View.VISIBLE);
         getObras(spObras);
         FloatingActionButton btnAddObra = findViewById(R.id.add_obra);
@@ -464,9 +494,10 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar pbObras = findViewById(R.id.pb_obras);
         tvDrawerTitle.setText("Obras - Materiales");
         ivTop.setImageResource(R.drawable.materiales);
+        ivWelcome.setVisibility(View.GONE);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
         final FloatingActionButton btnAddItem = findViewById(R.id.add_item_obra);
-        Spinner spObras = findViewById(R.id.sp_obras);
+        Spinner spObras = findViewById(R.id.sp_maq_obras);
         spObras.setVisibility(View.VISIBLE);
         getObras(spObras);
         FloatingActionButton btnAddObra = findViewById(R.id.add_obra);
@@ -509,6 +540,7 @@ public class MainActivity extends AppCompatActivity {
     public void loadEncargadosActivos(View view){
         tvDrawerTitle.setText("Encargados Activos");
         ivTop.setImageResource(R.drawable.active_encargado);
+        ivWelcome.setVisibility(View.GONE);
         RecyclerView rvEncargados = findViewById(R.id.rv_frag_encargados);
         FloatingActionButton btnAddEncargado = findViewById(R.id.btn_add_encargado);
         btnAddEncargado.setOnClickListener(new View.OnClickListener() {
@@ -533,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
         encargadosRVAdapter.setOnItemLongClickListener(new EncargadosRVAdapter.OnItemLongClickListener() {
             @Override
             public void changeStatus(int position) {
-                
+
             }
         });
 
@@ -552,6 +584,7 @@ public class MainActivity extends AppCompatActivity {
     public void loadEncargadosInactivos(View view){
         tvDrawerTitle.setText("Encargados Inactivos");
         ivTop.setImageResource(R.drawable.block_encargado);
+        ivWelcome.setVisibility(View.GONE);
         RecyclerView rvEncargados = findViewById(R.id.rv_frag_encargados);
         FloatingActionButton btnAddEncargado = findViewById(R.id.btn_add_encargado);
         btnAddEncargado.setOnClickListener(new View.OnClickListener() {
@@ -597,6 +630,7 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar pbObras = findViewById(R.id.pb_maq_nom);
         tvDrawerTitle.setText("M y N - Total de maquinaria");
         ivTop.setImageResource(R.drawable.block_encargado);
+        ivWelcome.setVisibility(View.GONE);
         FloatingActionButton btnAddMaquinaria = findViewById(R.id.btn_add_maq_nom);
         btnAddMaquinaria.setTitle("Agregar maquinaria");
         btnAddMaquinaria.setOnClickListener(new View.OnClickListener() {
@@ -611,16 +645,49 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager lmMaqNom = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         MaquinariaRVAdapter maquinariaRVAdapter = new MaquinariaRVAdapter(machines);
+
+        maquinariaRVAdapter.setOnItemLongClickListener(new MaquinariaRVAdapter.OnItemLongClickListener() {
+            @Override
+            public void assing(int position) {
+
+            }
+        });
+
+        maquinariaRVAdapter.setOnItemClickListener(new MaquinariaRVAdapter.OnItemClickListener() {
+            @Override
+            public void uploadAssign(int position) {
+                Machine machine = machines.get(position);
+                initMaqAssign(machine);
+            }
+        });
+
         rvMaqNom.setLayoutManager(lmMaqNom);
         rvMaqNom.setAdapter(maquinariaRVAdapter);
         getMachines(maquinariaRVAdapter, pbObras);
+    }
+
+    private void initMaqAssign(Machine machine) {
+        changeViewPage(9);
+        TextView tvNombre = findViewById(R.id.tv_maq_nombre);
+        tvNombre.setText(machine.getName());
+        Spinner spObras = findViewById(R.id.sp_maq_obras);
+        getObras(spObras);
+
+        Button btnAdd = findViewById(R.id.btn_acep_asig_maq);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        Button btnCancel = findViewById(R.id.btn_can_asig_maq);
     }
 
     public void loadAllNomina(View view){
         ProgressBar pbObras = findViewById(R.id.pb_maq_nom);
         tvDrawerTitle.setText("M y N - Total de nomina");
         ivTop.setImageResource(R.drawable.block_encargado);
-
+        ivWelcome.setVisibility(View.GONE);
         FloatingActionButton btnAddMaquinaria = findViewById(R.id.btn_add_maq_nom);
         btnAddMaquinaria.setTitle("Agregar maquinaria");
         btnAddMaquinaria.setOnClickListener(new View.OnClickListener() {
@@ -634,6 +701,22 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager lmMaqNom = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         NominaRVAdapter nominaRVAdapter = new NominaRVAdapter(nominas);
+
+        nominaRVAdapter.setOnItemLongClickListener(new NominaRVAdapter.OnItemLongClickListener() {
+            @Override
+            public void assing(int position) {
+
+            }
+        });
+
+        nominaRVAdapter.setOnItemClickListener(new NominaRVAdapter.OnItemClickListener() {
+            @Override
+            public void uploadAssign(int position) {
+                Nomina nomina = nominas.get(position);
+
+            }
+        });
+
         rvMaqNom.setLayoutManager(lmMaqNom);
         rvMaqNom.setAdapter(nominaRVAdapter);
         getNomina(nominaRVAdapter, pbObras);
@@ -1332,6 +1415,52 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showManual() {
+        tvDrawerTitle.setText("Manual de usuario");
+        ivTop.setImageResource(R.drawable.information);
+        pdfView = findViewById(R.id.pdfView);
+        displayFromAsset(SAMPLE_FILE);
+    }
+
+    private void displayFromAsset(String assetFileName) {
+        pdfFileName = assetFileName;
+
+        pdfView.fromAsset(SAMPLE_FILE)
+                .defaultPage(pageNumber)
+                .enableSwipe(true)
+
+                .swipeHorizontal(false)
+                .onPageChange(this)
+                .enableAnnotationRendering(true)
+                .onLoad(this)
+                .scrollHandle(new DefaultScrollHandle(this))
+                .load();
+    }
+
+    @Override
+    public void onPageChanged(int page, int pageCount) {
+        pageNumber = page;
+        setTitle(String.format("%s %s / %s", pdfFileName, page + 1, pageCount));
+    }
+
+    @Override
+    public void loadComplete(int nbPages) {
+        PdfDocument.Meta meta = pdfView.getDocumentMeta();
+        printBookmarksTree(pdfView.getTableOfContents(), "-");
+
+    }
+
+    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
+        for (PdfDocument.Bookmark b : tree) {
+
+            Log.e(TAG, String.format("%s %s, p %d", sep, b.getTitle(), b.getPageIdx()));
+
+            if (b.hasChildren()) {
+                printBookmarksTree(b.getChildren(), sep + "-");
+            }
+        }
     }
 
 }
