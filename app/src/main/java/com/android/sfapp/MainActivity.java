@@ -14,6 +14,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -135,13 +136,22 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
                 //Manual de usuario
                 R.layout.home_manual,
                 //Asignar maquina
-                R.layout.home_assign_maquina
+                R.layout.home_assign_maquina,
+                //Asignar nomina
+                R.layout.home_assign_nomina
 
         };
 
         HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(layouts,
                 getBaseContext());
         vpHome.setAdapter(homeViewPagerAdapter);
+
+        vpHome.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         abdt = new ActionBarDrawerToggle(this, dl, R.string.Open, R.string.Close);
         abdt.setDrawerIndicatorEnabled(true);
@@ -420,8 +430,26 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
         ivWelcome.setVisibility(View.GONE);
         final RecyclerView rvObra = findViewById(R.id.rv_frag_materials);
         final FloatingActionButton btnAddItem = findViewById(R.id.add_item_obra);
-        Spinner spObras = findViewById(R.id.sp_maq_obras);
+        final Spinner spObras = findViewById(R.id.sp_maq_obras);
         spObras.setVisibility(View.VISIBLE);
+
+        spObras.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int idObra = getObraId2(spObras.getSelectedItem().toString());
+                ArrayList<Nomina> temp = new ArrayList<>();
+                for (int i = 0; i < nominas.size(); i++){
+                    Nomina n = nominas.get(i);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         getObras(spObras);
         FloatingActionButton btnAddObra = findViewById(R.id.add_obra);
         btnAddObra.setOnClickListener(new View.OnClickListener() {
@@ -666,21 +694,28 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
         getMachines(maquinariaRVAdapter, pbObras);
     }
 
-    private void initMaqAssign(Machine machine) {
+    private void initMaqAssign(final Machine machine) {
         changeViewPage(9);
         TextView tvNombre = findViewById(R.id.tv_maq_nombre);
-        tvNombre.setText(machine.getName());
-        Spinner spObras = findViewById(R.id.sp_maq_obras);
+        tvNombre.setText(machine.getName() + " - " + machine.getId());
+        final Spinner spObras = findViewById(R.id.sp_maq_obras);
         getObras(spObras);
 
         Button btnAdd = findViewById(R.id.btn_acep_asig_maq);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                asignaMaquinaria(getObraId2(spObras.getSelectedItem().toString()), machine.getId(), "2018/10/10");
             }
         });
+
         Button btnCancel = findViewById(R.id.btn_can_asig_maq);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeViewPage(2);
+            }
+        });
     }
 
     public void loadAllNomina(View view){
@@ -713,13 +748,38 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
             @Override
             public void uploadAssign(int position) {
                 Nomina nomina = nominas.get(position);
-
+                initNomAsign(nomina);
             }
         });
 
         rvMaqNom.setLayoutManager(lmMaqNom);
         rvMaqNom.setAdapter(nominaRVAdapter);
         getNomina(nominaRVAdapter, pbObras);
+    }
+
+    private void initNomAsign(final Nomina nomina) {
+        changeViewPage(10);
+        TextView tvNombre = findViewById(R.id.tv_non_nombre);
+        tvNombre.setText(nomina.getFirstName() + " " + nomina.getLastName());
+        final Spinner spObras = findViewById(R.id.sp_obras_nom);
+        getObras(spObras);
+
+        Button btnAdd = findViewById(R.id.btn_acep_asig_nnom);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                asignarNomina(getObraId2(spObras.getSelectedItem().toString()), String.valueOf(nomina.getNumberDoc()), "2018/10/10");
+            }
+        });
+
+        Button btnCancel = findViewById(R.id.btn_can_asign_nom);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeViewPage(2);
+            }
+        });
+
     }
 
     @Override
@@ -953,6 +1013,16 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
         for (int i = 0; i < obras.size(); i++){
             if (name.equalsIgnoreCase(obras.get(i).getObraName())){
                 id = String.valueOf(obras.get(i).getObraId());
+            }
+        }
+        return id;
+    }
+
+    private int getObraId2(String name) {
+        int id = 0;
+        for (int i = 0; i < obras.size(); i++){
+            if (name.equalsIgnoreCase(obras.get(i).getObraName())){
+                id = obras.get(i).getObraId();
             }
         }
         return id;
@@ -1316,7 +1386,7 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MainActivity.this, "Ocurrio un error, vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                                changeViewPage(0);
                             }
                         });
                     }
@@ -1325,6 +1395,7 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
     }
 
     private void asignaMaquinaria(int id_oeuvre, int id_machine, String date_start){
+        Log.d("ID", String.valueOf(id_oeuvre));
         OkHttpClient client = new OkHttpClient();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject asignar = new JSONObject();
@@ -1340,7 +1411,7 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
 
         RequestBody requestBody = RequestBody.create(JSON, asignar.toString());
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(HOST + "/machines/toOeuvre")
                 .post(requestBody)
                 .build();
@@ -1357,12 +1428,24 @@ public class MainActivity extends AppCompatActivity implements OnPageChangeListe
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
                 if (!response.isSuccessful()){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Ocurrio un error vuelve a intentarlo", Toast.LENGTH_SHORT).show();
+                            try {
+                                Log.d("ERROR", response.body().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            changeViewPage(0);
+                        }
+                    });
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            changeViewPage(0);
                         }
                     });
                 }

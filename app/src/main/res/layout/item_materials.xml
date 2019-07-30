@@ -21,7 +21,8 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@drawable/maquinaria_nomina"
+            android:tint="@android:color/black"/>
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline12"
