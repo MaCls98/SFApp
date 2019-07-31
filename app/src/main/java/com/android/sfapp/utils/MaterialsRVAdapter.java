@@ -1,5 +1,6 @@
 package com.android.sfapp.utils;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.android.sfapp.R;
 import com.android.sfapp.model.MaterialCV;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.MaterialsViewHolder> {
@@ -23,6 +26,7 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
         public TextView tvDate;
         public TextView tvPrice;
         public TextView tvProveedor;
+        public TextView tvTotal;
 
         public MaterialsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -31,10 +35,15 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
             tvDate = itemView.findViewById(R.id.tv_date);
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvProveedor = itemView.findViewById(R.id.tv_doc);
+            tvTotal = itemView.findViewById(R.id.tv_total);
         }
     }
 
     public MaterialsRVAdapter(ArrayList<MaterialCV> materials){
+        this.materials = materials;
+    }
+
+    public void setMaterials(ArrayList<MaterialCV> materials) {
         this.materials = materials;
     }
 
@@ -50,11 +59,14 @@ public class MaterialsRVAdapter extends RecyclerView.Adapter<MaterialsRVAdapter.
     public void onBindViewHolder(@NonNull MaterialsViewHolder holder, int position) {
         MaterialCV material = materials.get(position);
 
+        int total = Integer.parseInt(material.getMaterialQuantity()) * Integer.parseInt(material.getMaterialPrice());
+
         holder.tvMaterialType.setText(material.getMaterialType());
-        holder.tvDate.setText(material.getMaterialDate());
-        holder.tvPrice.setText(material.getMaterialPrice());
-        holder.tvQuantity.setText(material.getMaterialQuantity() + " " + material.getMaterialUnit());
+        holder.tvDate.setText("Fecha: " + material.getMaterialDate().substring(0, 10));
+        holder.tvPrice.setText("Precio unitario: $" +material.getMaterialPrice());
+        holder.tvQuantity.setText("Total: " + material.getMaterialQuantity() + " " + material.getMaterialUnit());
         holder.tvProveedor.setText(material.getMaterialProveedor());
+        holder.tvTotal.setText("Precio total: " + total);
     }
 
     @Override

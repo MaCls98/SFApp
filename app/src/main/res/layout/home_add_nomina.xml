@@ -72,6 +72,7 @@
 
             <EditText
                 android:id="@+id/et_nomina_nombre"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -81,6 +82,7 @@
 
             <EditText
                 android:id="@+id/et_nomina_apellido"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -96,15 +98,17 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Numero de documento"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="10" />
 
         <EditText
             android:id="@+id/et_nomina_telefono"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/telefono_trabajor"
-            android:inputType="phone" />
+            android:hint="Numero de celular"
+            android:inputType="phone"
+            android:maxLength="10"/>
 
         <EditText
             android:id="@+id/et_nomina_salario"

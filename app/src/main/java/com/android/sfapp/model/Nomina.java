@@ -12,6 +12,8 @@ public class Nomina {
     private String email;
     private String salary;
 
+    private int idObra;
+
     public Nomina(int numberDoc, String typeDoc, String lastName, String firstName, String phone,  String email,  String salary) {
         this.numberDoc = numberDoc;
         this.typeDoc = typeDoc;
@@ -20,6 +22,22 @@ public class Nomina {
         this.phone = phone;
         this.email = email;
         this.salary = salary;
+    }
+
+    public Nomina(int numberDoc, String typeDoc, String lastName, String firstName, String phone, String email, String salary, int idObra) {
+        this.numberDoc = numberDoc;
+        this.typeDoc = typeDoc;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.phone = phone;
+        this.email = email;
+        this.salary = salary;
+        this.idObra = idObra;
+    }
+
+
+    public int getIdObra() {
+        return idObra;
     }
 
     public int getNumberDoc() {

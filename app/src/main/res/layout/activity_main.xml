@@ -100,5 +100,16 @@
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu">
 
+        <TextView
+            android:id="@+id/tv_sesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="16dp"
+            android:textAlignment="center"
+            android:text="Cerrar Sesion"
+            android:textColor="@android:color/black"/>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

@@ -17,6 +17,10 @@ public class NominaRVAdapter extends RecyclerView.Adapter<NominaRVAdapter.Nomina
 
     private ArrayList<Nomina> nominas;
 
+    public void setNominas(ArrayList<Nomina> nominas) {
+        this.nominas = nominas;
+    }
+
     private OnItemLongClickListener listener;
     private OnItemClickListener listener2;
 
@@ -107,7 +111,7 @@ public class NominaRVAdapter extends RecyclerView.Adapter<NominaRVAdapter.Nomina
         holder.tvNOmbre.setText(nomina.getFirstName() + " " + nomina.getLastName());
         holder.tvDoc.setText(nomina.getNumberDoc() + "");
         holder.tvCell.setText(nomina.getPhone());
-        holder.tvSalario.setText(nomina.getSalary());
+        holder.tvSalario.setText("Pago mensual: $" + nomina.getSalary());
     }
 
     @Override

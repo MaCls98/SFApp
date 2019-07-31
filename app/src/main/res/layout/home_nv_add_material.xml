@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Agregar Material"
+        android:text="Agregar material a obra"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"

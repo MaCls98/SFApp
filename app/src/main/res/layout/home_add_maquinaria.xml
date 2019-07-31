@@ -67,13 +67,14 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Nombre Maquinaria"
-            android:inputType="textPersonName" />
+            android:inputType="text"
+            android:maxLength="30" />
 
         <Button
             android:id="@+id/btn_fecha_maquinaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fecha de asignacion"
+            android:text="Fecha de agregacion"
             android:textAllCaps="false" />
 
         <TextView

@@ -20,6 +20,10 @@ public class MaquinariaRVAdapter extends RecyclerView.Adapter<MaquinariaRVAdapte
     private OnItemLongClickListener listener;
     private OnItemClickListener listener2;
 
+    public void setMaquinarias(ArrayList<Machine> actualMachines) {
+        maquinas = actualMachines;
+    }
+
     public interface OnItemLongClickListener{
         void assing(int position);
     }
@@ -47,7 +51,6 @@ public class MaquinariaRVAdapter extends RecyclerView.Adapter<MaquinariaRVAdapte
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_nombre);
             tvDate = itemView.findViewById(R.id.tv_date);
-            tvStatus = itemView.findViewById(R.id.tv_doc);
             btnAssign = itemView.findViewById(R.id.btn_assign);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -103,8 +106,7 @@ public class MaquinariaRVAdapter extends RecyclerView.Adapter<MaquinariaRVAdapte
         Machine machine = maquinas.get(position);
 
         holder.tvName.setText(machine.getName());
-        holder.tvDate.setText(machine.getDate());
-        holder.tvStatus.setText(machine.getStatus());
+        holder.tvDate.setText("Fecha: " + machine.getDate().substring(0, 10));
     }
 
     @Override

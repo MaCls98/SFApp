@@ -34,4 +34,8 @@ public class DatePickerFragment extends DialogFragment {
         // Create a new instance of DatePickerDialog and return it
         return new DatePickerDialog(getActivity(), listener, year, month, day);
     }
+
+    public DatePickerDialog.OnDateSetListener getListener() {
+        return listener;
+    }
 }
